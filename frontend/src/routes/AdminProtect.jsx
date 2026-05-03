@@ -1,5 +1,5 @@
-import { Navigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
+import AccessDenied from "../auth/pages/AccessDenied";
 
 function AdminProtect({ children }) {
 
@@ -10,14 +10,17 @@ function AdminProtect({ children }) {
 
     // Wait until user is loaded
     if (userLoading) {
-        return <h1>Loading...</h1>;
+        return <h1 className="text-center mt-10 dark:text-white">Loading...</h1>;
     }
 
     // Block if not admin
     if (!user || user.role?.toLowerCase() !== "admin") {
-        return <Navigate to="/login" />;
+        return (
+            <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900">
+                <AccessDenied />
+            </div>
+        );
     }
-
     // Allow admin
     return children;
 }

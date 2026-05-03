@@ -288,7 +288,21 @@ exports.deleteUserController = async (req, res) => {
     try {
 
         const { id } = req.params
+        const loggedInUserId = req.payload
 
+        // prevent deleting yourself (admin)
+        if (loggedInUserId === id) {
+            return res.status(400).json("You cannot delete yourself")
+        }
+
+        // find user
+        const userToDelete = await userModel.findById(id)
+
+        if (!userToDelete) {
+            return res.status(404).json("User not found")
+        }
+
+        // delete normal user
         await userModel.findByIdAndDelete(id)
         await applianceModel.deleteMany({ userId: id })
         await usageModel.deleteMany({ userId: id })
@@ -296,7 +310,8 @@ exports.deleteUserController = async (req, res) => {
         res.status(200).json("User deleted successfully")
 
     } catch (error) {
-        res.status(500).json(error)
+        console.log(error)
+        res.status(500).json("Server error")
     }
 }
 

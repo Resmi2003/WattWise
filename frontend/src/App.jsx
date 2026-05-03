@@ -4,6 +4,7 @@ import MainLayout from "./layout/MainLayout";
 import Login from "./auth/pages/Login";
 import Register from "./auth/pages/Register";
 import Landing from "./auth/pages/Landing";
+
 import Dashboard from "./user/pages/Dashboard";
 import Appliances from "./user/pages/Appliances";
 import Analytics from "./user/pages/Analytics";
@@ -11,10 +12,12 @@ import Notifications from "./user/pages/Notifications";
 import Profile from "./user/pages/Profile";
 import UsageLog from "./user/pages/UsageLog";
 import Settings from "./user/pages/Settings";
+
 import AdminDashboard from "./admin/pages/AdminDashboard";
+import Users from "./admin/pages/Users";
+
 import AdminProtect from "./routes/AdminProtect";
-
-
+import UserProtect from "./routes/UserProtect";
 
 function App() {
   return (
@@ -22,16 +25,19 @@ function App() {
       <Router>
         <Routes>
 
-          {/* Public Pages */}
+          {/* PUBLIC */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-
-
-          <Route element={<MainLayout />}>
-
-            {/* USER */}
+          {/* USER ROUTES */}
+          <Route
+            element={
+              <UserProtect>
+                <MainLayout />
+              </UserProtect>
+            }
+          >
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/appliances" element={<Appliances />} />
             <Route path="/usage-log" element={<UsageLog />} />
@@ -39,8 +45,11 @@ function App() {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
+          </Route>
 
-            {/* ADMIN */}
+          {/* ADMIN ROUTES */}
+          <Route element={<MainLayout />}>
+
             <Route
               path="/admin/dashboard"
               element={
@@ -49,8 +58,33 @@ function App() {
                 </AdminProtect>
               }
             />
-            <Route path="/admin/profile" element={<Profile />} />
-            <Route path="/admin/settings" element={<Settings />} />
+
+            <Route
+              path="/admin/profile"
+              element={
+                <AdminProtect>
+                  <Profile />
+                </AdminProtect>
+              }
+            />
+
+            <Route
+              path="/admin/settings"
+              element={
+                <AdminProtect>
+                  <Settings />
+                </AdminProtect>
+              }
+            />
+
+            <Route
+              path="/admin/users"
+              element={
+                <AdminProtect>
+                  <Users />
+                </AdminProtect>
+              }
+            />
 
           </Route>
 

@@ -106,3 +106,8 @@ export const getAllUsersAPI = async () => {
   return await commonAPI("GET", `${server_url}/api/admin/users`, {});
 };
 
+// delete user
+export const deleteUserAPI = async (id) => {
+  return await commonAPI("DELETE", `${server_url}/api/admin/user/${id}`, {});
+};
+
