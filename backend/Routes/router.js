@@ -1,13 +1,14 @@
 const express = require('express')
 const userController = require('../controller/userController')
+const adminController = require('../controller/adminController')
 const applianceController = require('../controller/applianceController')
 const jwtMiddleware = require('../middleware/jwtMiddleware')
 const usageController = require('../controller/usageController')
 const multerConfig = require('../middleware/multerMiddleware')
 const adminMiddleware = require('../middleware/adminMiddleware')
 const {
-  getNotifications,
-  markAsRead
+    getNotifications,
+    markAsRead
 } = require("../controller/notificationController");
 
 
@@ -98,6 +99,11 @@ router.get(
 
 
 
+// =====================NOTIFICATION==================
+// router.get('/notifications', jwtMiddleware, getNotificationController)
+// router.put('/notifications/:id', jwtMiddleware, markAsRead)
+
+
 
 
 // ================= ADMIN =================
@@ -107,7 +113,7 @@ router.get(
     '/admin/users',
     jwtMiddleware,
     adminMiddleware,
-    userController.getAllUsersController
+    adminController.getAllUsersController
 )
 
 // DELETE USER
@@ -115,7 +121,7 @@ router.delete(
     '/admin/user/:id',
     jwtMiddleware,
     adminMiddleware,
-    userController.deleteUserController
+    adminController.deleteUserController
 )
 
 // STATS
@@ -123,9 +129,26 @@ router.get(
     '/admin/stats',
     jwtMiddleware,
     adminMiddleware,
-    userController.adminStatsController
+    adminController.adminStatsController
 )
 
+
+// USER BLOCK MANAGEMENT
+router.put(
+    '/admin/user/block/:id',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.toggleBlockUserController
+)
+
+
+// ENERGY TREND
+router.get(
+    '/admin/energy-trend',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.adminEnergyTrendController
+)
 
 
 

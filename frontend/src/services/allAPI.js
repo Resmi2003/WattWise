@@ -111,3 +111,16 @@ export const deleteUserAPI = async (id) => {
   return await commonAPI("DELETE", `${server_url}/api/admin/user/${id}`, {});
 };
 
+// block / unblock user
+export const toggleBlockUserAPI = async (id) => {
+  return await commonAPI("PUT", `${server_url}/api/admin/user/block/${id}`, {});
+};
+
+
+// ================= ADMIN DASHBOARD =================
+
+// get admin stats
+export const getAdminStatsAPI = async () => {
+  return await commonAPI("GET", `${server_url}/api/admin/stats`, {});
+};
+

@@ -3,7 +3,7 @@ const Notification = require("../model/notificationModel");
 // get all notifications
 exports.getNotificationController = async (req, res) => {
   try {
-    const notifications = await notificationModel.find({
+    const notifications = await Notification.find({
       userId: req.payload
     });
 

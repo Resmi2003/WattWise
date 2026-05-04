@@ -4,7 +4,18 @@ const jwtMiddleware = (req, res, next) => {
     console.log("inside jwt middleware");
 
     try {
-        const token = req.headers["authorization"].split(" ")[1]
+
+        const authHeader = req.headers["authorization"]
+
+        if (!authHeader) {
+            return res.status(401).json("Authorization header missing")
+        }
+
+        const token = authHeader.split(" ")[1]
+
+        if (!token) {
+            return res.status(401).json("Token missing")
+        }
 
         const jwtResponse = jwt.verify(token, process.env.JWT_SECRET)
 

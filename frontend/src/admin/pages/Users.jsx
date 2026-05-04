@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getAllUsersAPI, deleteUserAPI } from "../../services/allAPI";
+import {
+    getAllUsersAPI,
+    deleteUserAPI,
+    toggleBlockUserAPI,
+} from "../../services/allAPI";
+import { toast } from "react-toastify";
 
 function Users() {
 
@@ -19,6 +24,7 @@ function Users() {
 
         } catch (err) {
             console.log(err);
+            toast.error("Failed to load users");
         } finally {
             setLoading(false);
         }
@@ -27,10 +33,22 @@ function Users() {
     // delete user
     const handleDelete = async (id) => {
         try {
-            await deleteUserAPI(id);
+            const res = await deleteUserAPI(id);
+            toast.success(res.data);
             fetchUsers();
         } catch (err) {
-            console.log(err);
+            toast.error("Delete failed");
+        }
+    };
+
+    // block / unblock user
+    const handleBlockToggle = async (id) => {
+        try {
+            const res = await toggleBlockUserAPI(id);
+            toast.success(res.data.message);
+            fetchUsers();
+        } catch (err) {
+            toast.error("Action failed");
         }
     };
 
@@ -41,7 +59,7 @@ function Users() {
     return (
         <div>
 
-            <h1 className="text-xl font-bold mb-4">All Users</h1>
+            <h1 className="text-xl font-bold mb-4">User Management</h1>
 
             {loading ? (
                 <p className="text-gray-500 dark:text-gray-400">Loading...</p>
@@ -57,6 +75,7 @@ function Users() {
                                 <th className="p-3 text-left">Name</th>
                                 <th className="p-3 text-left">Email</th>
                                 <th className="p-3 text-left">Role</th>
+                                <th className="p-3 text-left">Status</th>
                                 <th className="p-3 text-left">Action</th>
                             </tr>
                         </thead>
@@ -65,21 +84,41 @@ function Users() {
                             {users.map((user) => (
                                 <tr key={user._id} className="border-t dark:border-gray-700">
 
-                                    <td className="p-3">
-                                        {user.username}
-                                    </td>
+                                    <td className="p-3">{user.username}</td>
                                     <td className="p-3">{user.email}</td>
-                                    <td className="p-3">{user.role}</td>
+                                    <td className="p-3 capitalize">{user.role}</td>
+
+                                    <td className="p-3">
+                                        {user.isBlocked ? (
+                                            <span className="text-red-500 font-semibold">Blocked</span>
+                                        ) : (
+                                            <span className="text-green-500 font-semibold">Active</span>
+                                        )}
+                                    </td>
 
                                     <td className="p-3">
 
                                         {user.role !== "admin" && (
-                                            <button
-                                                onClick={() => handleDelete(user._id)}
-                                                className="bg-red-500 text-white px-3 py-1 rounded"
-                                            >
-                                                Delete
-                                            </button>
+                                            <div className="flex gap-2">
+
+                                                <button
+                                                    onClick={() => handleBlockToggle(user._id)}
+                                                    className={`px-3 py-1 rounded text-white ${user.isBlocked
+                                                            ? "bg-green-500"
+                                                            : "bg-yellow-500"
+                                                        }`}
+                                                >
+                                                    {user.isBlocked ? "Unblock" : "Block"}
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleDelete(user._id)}
+                                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                                >
+                                                    Delete
+                                                </button>
+
+                                            </div>
                                         )}
 
                                     </td>

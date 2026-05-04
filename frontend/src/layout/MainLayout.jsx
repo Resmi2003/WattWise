@@ -1,9 +1,9 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../user/components/Sidebar";
 import Navbar from "../user/components/Navbar";
 import { useAppContext } from "../context/AppContext";
 import { Oval } from "react-loader-spinner";
+import Sidebar from "../components/Sidebar";
 
 
 

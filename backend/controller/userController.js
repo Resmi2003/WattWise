@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const userModel = require('../model/userModel')
 const applianceModel = require('../model/applianceModel')
 const usageModel = require('../model/usageModel')
+const mongoose = require('mongoose')
 
 
 // REGISTER
@@ -51,6 +52,10 @@ exports.loginController = async (req, res) => {
 
         if (!existingUser) {
             return res.status(404).json("User not found")
+        }
+
+        if (existingUser.isBlocked) {
+            return res.status(403).json("Your account is blocked by admin")
         }
 
         // compare password
@@ -212,10 +217,6 @@ exports.deleteOwnAccountController = async (req, res) => {
 exports.updateAchievements = async (userId) => {
     try {
 
-        const usageModel = require('../model/usageModel')
-        const applianceModel = require('../model/applianceModel')
-        const userModel = require('../model/userModel')
-
         const usageCount = await usageModel.countDocuments({ userId })
         const applianceCount = await applianceModel.countDocuments({ userId })
 
@@ -223,8 +224,11 @@ exports.updateAchievements = async (userId) => {
         const usageLogs = await usageModel.find({ userId })
 
         // total energy consumption
-        const totalEnergy = usageLogs.reduce((sum, log) => sum + log.energy, 0)
-
+        const totalEnergy = usageLogs.reduce(
+            (sum, log) => sum + Number(log.energy),
+            0
+        )
+        
         // average energy per usage
         const avgEnergy = usageCount > 0 ? totalEnergy / usageCount : 0
 
@@ -264,76 +268,3 @@ exports.updateAchievements = async (userId) => {
 
 
 
-// ================= ALL USERS =================
-exports.getAllUsersController = async (req, res) => {
-    try {
-
-        const users = await userModel.find().select('-password')
-
-        res.status(200).json(users)
-
-    } catch (error) {
-        res.status(500).json(error)
-    }
-}
-
-
-
-
-
-
-
-// ================= DELETE USER =================
-exports.deleteUserController = async (req, res) => {
-    try {
-
-        const { id } = req.params
-        const loggedInUserId = req.payload
-
-        // prevent deleting yourself (admin)
-        if (loggedInUserId === id) {
-            return res.status(400).json("You cannot delete yourself")
-        }
-
-        // find user
-        const userToDelete = await userModel.findById(id)
-
-        if (!userToDelete) {
-            return res.status(404).json("User not found")
-        }
-
-        // delete normal user
-        await userModel.findByIdAndDelete(id)
-        await applianceModel.deleteMany({ userId: id })
-        await usageModel.deleteMany({ userId: id })
-
-        res.status(200).json("User deleted successfully")
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).json("Server error")
-    }
-}
-
-
-
-
-
-// ================= ADMIN STATS =================
-exports.adminStatsController = async (req, res) => {
-    try {
-
-        const totalUsers = await userModel.countDocuments()
-        const totalAppliances = await applianceModel.countDocuments()
-        const totalUsageLogs = await usageModel.countDocuments()
-
-        res.status(200).json({
-            totalUsers,
-            totalAppliances,
-            totalUsageLogs
-        })
-
-    } catch (error) {
-        res.status(500).json(error)
-    }
-}
