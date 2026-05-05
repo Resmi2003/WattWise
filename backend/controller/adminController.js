@@ -216,9 +216,28 @@ exports.adminEnergyTrendController = async (req, res) => {
             monthlyTrend[month] = Number(monthlyTrend[month].toFixed(2))
         }
 
+        // ===== APPLIANCE DISTRIBUTION =====
+        const applianceDistribution = {}
+
+        usageData.forEach(log => {
+
+            const name = log.applianceName
+                ? log.applianceName.toLowerCase().trim()
+                : "unknown";
+
+            applianceDistribution[name] =
+                (applianceDistribution[name] || 0) + Number(log.energy)
+        })
+
+        // Fix decimals
+        for (const key in applianceDistribution) {
+            applianceDistribution[key] = Number(applianceDistribution[key].toFixed(2))
+        }
+
         res.status(200).json({
             last7Days,
-            monthlyTrend
+            monthlyTrend,
+            applianceDistribution
         })
 
     } catch (error) {
