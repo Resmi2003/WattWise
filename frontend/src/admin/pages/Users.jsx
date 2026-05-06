@@ -11,6 +11,9 @@ function Users() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // ✅ NEW STATE FOR SEARCH
+    const [search, setSearch] = useState("");
+
     // fetch users
     const fetchUsers = async () => {
         try {
@@ -56,14 +59,35 @@ function Users() {
         fetchUsers();
     }, []);
 
+    // ✅ FILTERED USERS (SEARCH LOGIC)
+    const filteredUsers = users.filter((user) =>
+        user.username.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
         <div>
 
-            <h1 className="text-xl font-bold mb-4">User Management</h1>
+            {/* ❌ REMOVED HEADING */}
+
+            {/* ✅ SEARCH BAR */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Search by name or email..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full md:w-1/3 p-2 border rounded-lg 
+                    bg-white dark:bg-gray-800 
+                    text-gray-700 dark:text-gray-300 
+                    border-gray-400 dark:border-gray-600 
+                    focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
 
             {loading ? (
                 <p className="text-gray-500 dark:text-gray-400">Loading...</p>
-            ) : users.length === 0 ? (
+            ) : filteredUsers.length === 0 ? (
                 <p className="text-gray-500 dark:text-gray-400">No users found</p>
             ) : (
 
@@ -81,7 +105,7 @@ function Users() {
                         </thead>
 
                         <tbody>
-                            {users.map((user) => (
+                            {filteredUsers.map((user) => (
                                 <tr key={user._id} className="border-t dark:border-gray-700">
 
                                     <td className="p-3">{user.username}</td>
@@ -103,10 +127,11 @@ function Users() {
 
                                                 <button
                                                     onClick={() => handleBlockToggle(user._id)}
-                                                    className={`px-3 py-1 rounded text-white ${user.isBlocked
+                                                    className={`px-3 py-1 rounded text-white ${
+                                                        user.isBlocked
                                                             ? "bg-green-500"
                                                             : "bg-yellow-500"
-                                                        }`}
+                                                    }`}
                                                 >
                                                     {user.isBlocked ? "Unblock" : "Block"}
                                                 </button>

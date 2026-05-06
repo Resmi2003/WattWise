@@ -152,6 +152,28 @@ router.get(
 
 
 
+// ================= ADMIN APPLIANCES =================
+
+// GET ALL APPLIANCES (ADMIN)
+router.get(
+  '/admin/appliances',
+  jwtMiddleware,
+  adminMiddleware,
+  adminController.getAllAppliancesController
+)
+
+// DELETE ANY APPLIANCE (ADMIN)
+router.delete(
+  '/admin/appliances/:id',
+  jwtMiddleware,
+  adminMiddleware,
+  adminController.deleteAnyApplianceController
+)
+
+
+
+
+
 
 
 

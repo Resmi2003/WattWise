@@ -244,3 +244,40 @@ exports.adminEnergyTrendController = async (req, res) => {
         res.status(500).json("Energy trend fetch failed")
     }
 }
+
+
+
+// ================= GET ALL APPLIANCES =================
+exports.getAllAppliancesController = async (req, res) => {
+    try {
+
+        const appliances = await applianceModel
+            .find()
+            .populate("userId", "username email") // get user info
+
+        res.status(200).json(appliances)
+
+    } catch (error) {
+        res.status(500).json("Failed to fetch appliances")
+    }
+}
+
+
+// ================= DELETE ANY APPLIANCE =================
+exports.deleteAnyApplianceController = async (req, res) => {
+    try {
+
+        const { id } = req.params
+
+        const deleted = await applianceModel.findByIdAndDelete(id)
+
+        if (!deleted) {
+            return res.status(404).json("Appliance not found")
+        }
+
+        res.status(200).json("Appliance deleted")
+
+    } catch (error) {
+        res.status(500).json("Delete failed")
+    }
+}

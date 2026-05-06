@@ -29,8 +29,8 @@ function Sidebar() {
   const adminMenu = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <Home size={19} strokeWidth={2} /> },
     { name: "User Management", path: "/admin/users", icon: <User size={19} strokeWidth={2} /> },
-    { name: "Energy Insights", path: "/admin/analytics", icon: <Activity size={19} strokeWidth={2} /> },
-    { name: "Settings", path: "/admin/settings", icon: <Settings size={19} strokeWidth={2} /> },
+    { name: "Appliance Overview", path: "/admin/appliances", icon: <Zap size={19} strokeWidth={2} /> },
+    { name: "Analytics", path: "/admin/analytics", icon: <BarChart2 size={19} strokeWidth={2} /> },
   ];
 
   const menu = user?.role === "admin" ? adminMenu : userMenu;

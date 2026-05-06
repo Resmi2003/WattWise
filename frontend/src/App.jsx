@@ -4,7 +4,6 @@ import MainLayout from "./layout/MainLayout";
 import Login from "./auth/pages/Login";
 import Register from "./auth/pages/Register";
 import Landing from "./auth/pages/Landing";
-
 import Dashboard from "./user/pages/Dashboard";
 import Appliances from "./user/pages/Appliances";
 import Analytics from "./user/pages/Analytics";
@@ -12,12 +11,13 @@ import Notifications from "./user/pages/Notifications";
 import Profile from "./user/pages/Profile";
 import UsageLog from "./user/pages/UsageLog";
 import Settings from "./user/pages/Settings";
-
 import AdminDashboard from "./admin/pages/AdminDashboard";
 import Users from "./admin/pages/Users";
-
 import AdminProtect from "./routes/AdminProtect";
 import UserProtect from "./routes/UserProtect";
+import ApplianceOverview from "./admin/pages/ApplianceOverview";
+import AdminAnalytics from "./admin/pages/AdminAnalytics";
+
 
 function App() {
   return (
@@ -60,28 +60,28 @@ function App() {
             />
 
             <Route
-              path="/admin/profile"
-              element={
-                <AdminProtect>
-                  <Profile />
-                </AdminProtect>
-              }
-            />
-
-            <Route
-              path="/admin/settings"
-              element={
-                <AdminProtect>
-                  <Settings />
-                </AdminProtect>
-              }
-            />
-
-            <Route
               path="/admin/users"
               element={
                 <AdminProtect>
                   <Users />
+                </AdminProtect>
+              }
+            />
+
+            <Route
+              path="/admin/appliances"
+              element={
+                <AdminProtect>
+                  <ApplianceOverview />
+                </AdminProtect>
+              }
+            />
+
+            <Route
+              path="/admin/analytics"
+              element={
+                <AdminProtect>
+                  <AdminAnalytics />
                 </AdminProtect>
               }
             />
