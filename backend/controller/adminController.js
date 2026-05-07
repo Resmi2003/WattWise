@@ -2,6 +2,11 @@ const userModel = require('../model/userModel')
 const applianceModel = require('../model/applianceModel')
 const usageModel = require('../model/usageModel')
 const mongoose = require('mongoose')
+const PDFDocument = require("pdfkit")
+
+
+
+
 
 // ================= ALL USERS =================
 exports.getAllUsersController = async (req, res) => {
@@ -279,5 +284,292 @@ exports.deleteAnyApplianceController = async (req, res) => {
 
     } catch (error) {
         res.status(500).json("Delete failed")
+    }
+}
+
+
+// ================= EXPORT CSV =================
+exports.exportCSVController = async (req, res) => {
+    try {
+
+        const usageData = await usageModel
+            .find()
+            .populate("userId", "username email")
+
+        let csv = "User,Email,Appliance,Energy(kWh),Hours,Date\n"
+
+        usageData.forEach(item => {
+            csv += `${item.userId?.username || "N/A"},`
+            csv += `${item.userId?.email || "N/A"},`
+            csv += `${item.applianceName},`
+            csv += `${item.energy},`
+            csv += `${item.hours},`
+            csv += `${new Date(item.date).toISOString().split("T")[0]}\n`
+        })
+
+        res.header("Content-Type", "text/csv")
+        res.attachment("report.csv")
+
+        res.send(csv)
+
+    } catch (error) {
+        res.status(500).json("CSV export failed")
+    }
+}
+
+
+// ================= EXPORT PDF =================
+exports.exportPDFController = async (req, res) => {
+    try {
+
+        const usageData = await usageModel
+            .find()
+            .populate("userId", "username email")
+
+        const doc = new PDFDocument()
+
+        res.setHeader("Content-Type", "application/pdf")
+        res.setHeader("Content-Disposition", "attachment; filename=report.pdf")
+
+        doc.pipe(res)
+
+        doc.fontSize(16).text("WattWise Report", { align: "center" })
+        doc.moveDown()
+
+        usageData.forEach((item, index) => {
+            doc.text(
+                `${index + 1}. ${item.userId?.username || "N/A"} - ${item.applianceName} - ${item.energy} kWh`
+            )
+        })
+
+        doc.end()
+
+    } catch (error) {
+        res.status(500).json("PDF export failed")
+    }
+}
+
+
+
+
+// ================= ADMIN INSIGHTS =================
+exports.adminInsightsController = async (req, res) => {
+    try {
+
+        const usageData = await usageModel.find()
+
+        if (usageData.length === 0) {
+            return res.status(200).json({
+                topAppliance: null,
+                topUsers: [],
+                peakDay: null,
+                efficiencyScore: 0
+            })
+        }
+
+        // ================= MOST USED APPLIANCE =================
+        const applianceMap = {}
+
+        usageData.forEach(log => {
+            const name = log.applianceName || "Unknown"
+            applianceMap[name] = (applianceMap[name] || 0) + Number(log.energy)
+        })
+
+        let topAppliance = Object.entries(applianceMap)
+            .sort((a, b) => b[1] - a[1])[0]
+
+        // ================= TOP 3 USERS =================
+        const userMap = {}
+
+        usageData.forEach(log => {
+            const userId = log.userId.toString()
+            userMap[userId] = (userMap[userId] || 0) + Number(log.energy)
+        })
+
+        const sortedUsers = Object.entries(userMap)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+
+        const topUsers = []
+
+        for (const [userId, energy] of sortedUsers) {
+            const user = await userModel.findById(userId).select("username email")
+
+            if (user) {
+                topUsers.push({
+                    username: user.username,
+                    email: user.email,
+                    energy: Number(energy.toFixed(2))
+                })
+            }
+        }
+
+        // ================= PEAK DAY =================
+        const dayMap = {}
+
+        usageData.forEach(log => {
+            const day = new Date(log.date).toISOString().split("T")[0]
+            dayMap[day] = (dayMap[day] || 0) + Number(log.energy)
+        })
+
+        let peakDay = Object.entries(dayMap)
+            .sort((a, b) => b[1] - a[1])[0]
+
+        // ================= EFFICIENCY SCORE =================
+        const totalEnergy = usageData.reduce((sum, item) => sum + Number(item.energy), 0)
+        const avgEnergy = totalEnergy / usageData.length
+
+        // simple logic (lower avg = better efficiency)
+        let efficiencyScore = 100 - avgEnergy * 10
+        if (efficiencyScore < 0) efficiencyScore = 0
+
+        res.status(200).json({
+            topAppliance: topAppliance
+                ? { name: topAppliance[0], energy: Number(topAppliance[1].toFixed(2)) }
+                : null,
+            topUsers,
+            peakDay: peakDay
+                ? { date: peakDay[0], energy: Number(peakDay[1].toFixed(2)) }
+                : null,
+            efficiencyScore: Number(efficiencyScore.toFixed(1))
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json("Insights error")
+    }
+}
+
+
+
+// ================= LEADERBOARD =================
+exports.adminLeaderboardController = async (req, res) => {
+    try {
+        const usageData = await usageModel.find();
+
+        const energyByUser = {};
+
+        usageData.forEach(log => {
+            const userId = log.userId.toString();
+
+            energyByUser[userId] =
+                (energyByUser[userId] || 0) + Number(log.energy);
+        });
+
+        const leaderboard = [];
+
+        for (const userId in energyByUser) {
+            const user = await userModel
+                .findById(userId)
+                .select("username email");
+
+            if (user) {
+                leaderboard.push({
+                    username: user.username,
+                    email: user.email,
+                    energy: Number(energyByUser[userId].toFixed(2))
+                });
+            }
+        }
+
+        // sort descending
+        leaderboard.sort((a, b) => b.energy - a.energy);
+
+        res.status(200).json(leaderboard);
+
+    } catch (error) {
+        res.status(500).json("Leaderboard fetch failed");
+    }
+};
+
+
+// ================= ADMIN ALERTS =================
+exports.adminAlertsController = async (req, res) => {
+    try {
+
+        const usageData = await usageModel.find();
+
+        let alerts = [];
+
+        // HIGH ENERGY USAGE
+        const highUsage = usageData.filter(u => Number(u.energy) > 5);
+
+        if (highUsage.length > 0) {
+            alerts.push({
+                type: "danger",
+                message: "High energy usage detected"
+            });
+        }
+
+        // TODAY USAGE
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const todayLogs = usageData.filter(
+            u => new Date(u.createdAt) >= today
+        );
+
+        const todayEnergy = todayLogs.reduce(
+            (sum, u) => sum + Number(u.energy),
+            0
+        );
+
+        if (todayEnergy > 20) {
+            alerts.push({
+                type: "warning",
+                message: "Today's energy consumption is high"
+            });
+        }
+
+        // DOMINATING USER
+        const energyByUser = {};
+
+        usageData.forEach(log => {
+            const userId = log.userId.toString();
+            energyByUser[userId] =
+                (energyByUser[userId] || 0) + Number(log.energy);
+        });
+
+        const values = Object.values(energyByUser);
+
+        if (values.length > 0) {
+            const max = Math.max(...values);
+            const total = values.reduce((a, b) => a + b, 0);
+
+            if (max > total * 0.5) {
+                alerts.push({
+                    type: "info",
+                    message: "One user is consuming majority energy"
+                });
+            }
+        }
+
+        // fallback
+        if (alerts.length === 0) {
+            alerts.push({
+                type: "success",
+                message: "System running normally"
+            });
+        }
+
+        res.status(200).json(alerts);
+
+    } catch (error) {
+        res.status(500).json("Alerts fetch failed");
+    }
+};
+
+
+// ================= RAW LOGS =================
+exports.getAllUsageLogsController = async (req, res) => {
+    try {
+        const logs = await usageModel
+            .find()
+            .populate("userId", "username email")
+
+        res.status(200).json(logs)
+
+    } catch (error) {
+        res.status(500).json("Failed to fetch logs")
     }
 }

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { server_url } from "../../services/server_url";
 import { Trash2, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
+import { getAdminAppliancesAPI, deleteAdminApplianceAPI } from "../../services/allAPI";
 
 function ApplianceOverview() {
   const [appliances, setAppliances] = useState([]);
@@ -11,7 +10,7 @@ function ApplianceOverview() {
   useEffect(() => {
     fetchAppliances();
 
-    // 🔥 REAL-TIME SIMULATION (polling)
+    // REAL-TIME SIMULATION (polling)
     const interval = setInterval(() => {
       fetchAppliances();
     }, 5000);
@@ -20,15 +19,8 @@ function ApplianceOverview() {
   }, []);
 
   const fetchAppliances = async () => {
-    const token = sessionStorage.getItem("token");
-
     try {
-      const res = await axios.get(
-        `${server_url}/api/admin/appliances`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await getAdminAppliancesAPI();
 
       setAppliances(res.data);
       setLastUpdated(new Date().toLocaleTimeString());
@@ -38,16 +30,13 @@ function ApplianceOverview() {
   };
 
   const handleDelete = async (id) => {
-    const token = sessionStorage.getItem("token");
+    try {
+      await deleteAdminApplianceAPI(id);
 
-    await axios.delete(
-      `${server_url}/api/admin/appliances/${id}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    setAppliances((prev) => prev.filter((a) => a._id !== id));
+      setAppliances((prev) => prev.filter((a) => a._id !== id));
+    } catch (err) {
+      console.log("Delete error", err);
+    }
   };
 
   const getStatusColor = (power) => {
@@ -69,11 +58,7 @@ function ApplianceOverview() {
       <div className="mb-6 flex items-center justify-between">
 
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-            Appliance Activity Overview
-          </h1>
-
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">
             Live monitoring system
           </p>
         </div>

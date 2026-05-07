@@ -124,3 +124,62 @@ export const getAdminStatsAPI = async () => {
   return await commonAPI("GET", `${server_url}/api/admin/stats`, {});
 };
 
+
+
+
+// =============== ADMIN ANALYTICS ==================
+
+// admin insights
+export const getAdminInsightsAPI = async () => {
+  return await commonAPI("GET", `${server_url}/api/admin/insights`, {});
+};
+
+
+// admin leaderboard
+export const getAdminLeaderboardAPI = async () => {
+  return await commonAPI("GET", `${server_url}/api/admin/leaderboard`, {});
+};
+
+
+// admin alert
+export const getAdminAlertsAPI = async () => {
+  return await commonAPI("GET", `${server_url}/api/admin/alerts`, {});
+};
+
+
+// admin usage logs
+export const getAdminUsageLogsAPI = async () => {
+  return await commonAPI(
+    "GET",
+    `${server_url}/api/admin/usage-logs`,
+    {}
+  );
+};
+
+
+// admin energy trend
+export const getAdminEnergyTrendAPI = async () => {
+  return await commonAPI(
+    "GET",
+    `${server_url}/api/admin/energy-trend`,
+    {}
+  );
+};
+
+// get admin appliances
+export const getAdminAppliancesAPI = async () => {
+  return await commonAPI(
+    "GET",
+    `${server_url}/api/admin/appliances`,
+    {}
+  );
+};
+
+// delete admin appliance
+export const deleteAdminApplianceAPI = async (id) => {
+  return await commonAPI(
+    "DELETE",
+    `${server_url}/api/admin/appliances/${id}`,
+    {}
+  );
+};

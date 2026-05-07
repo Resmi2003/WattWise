@@ -11,7 +11,7 @@ function Users() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // ✅ NEW STATE FOR SEARCH
+    // NEW STATE FOR SEARCH
     const [search, setSearch] = useState("");
 
     // fetch users
@@ -59,7 +59,7 @@ function Users() {
         fetchUsers();
     }, []);
 
-    // ✅ FILTERED USERS (SEARCH LOGIC)
+    // FILTERED USERS (SEARCH LOGIC)
     const filteredUsers = users.filter((user) =>
         user.username.toLowerCase().includes(search.toLowerCase()) ||
         user.email.toLowerCase().includes(search.toLowerCase())
@@ -68,9 +68,8 @@ function Users() {
     return (
         <div>
 
-            {/* ❌ REMOVED HEADING */}
 
-            {/* ✅ SEARCH BAR */}
+            {/* SEARCH BAR */}
             <div className="mb-4">
                 <input
                     type="text"

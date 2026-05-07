@@ -151,24 +151,76 @@ router.get(
 )
 
 
+// EXPORT CSV
+router.get(
+    '/admin/export/csv',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.exportCSVController
+)
+
+// EXPORT PDF
+router.get(
+    '/admin/export/pdf',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.exportPDFController
+)
+
+// ADMIN INSIGHTS
+router.get(
+    '/admin/insights',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.adminInsightsController
+)
+
+
+// ADMIN LEADERBOARD
+router.get(
+    '/admin/leaderboard',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.adminLeaderboardController
+);
+
+
+// ADMIN ALERTS
+router.get(
+    '/admin/alerts',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.adminAlertsController
+);
+
+//
+router.get(
+  '/admin/usage-logs',
+  jwtMiddleware,
+  adminMiddleware,
+  adminController.getAllUsageLogsController
+)
+
 
 // ================= ADMIN APPLIANCES =================
 
 // GET ALL APPLIANCES (ADMIN)
 router.get(
-  '/admin/appliances',
-  jwtMiddleware,
-  adminMiddleware,
-  adminController.getAllAppliancesController
+    '/admin/appliances',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.getAllAppliancesController
 )
 
 // DELETE ANY APPLIANCE (ADMIN)
 router.delete(
-  '/admin/appliances/:id',
-  jwtMiddleware,
-  adminMiddleware,
-  adminController.deleteAnyApplianceController
+    '/admin/appliances/:id',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.deleteAnyApplianceController
 )
+
+
 
 
 

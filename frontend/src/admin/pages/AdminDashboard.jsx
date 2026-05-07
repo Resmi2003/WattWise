@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getAdminStatsAPI } from "../../services/allAPI";
-import { server_url } from "../../services/server_url";
-import axios from "axios";
+import {
+  getAdminStatsAPI,
+  getAdminEnergyTrendAPI
+} from "../../services/allAPI";
 import {
   Users,
   UserCheck,
@@ -36,7 +37,7 @@ ChartJS.register(
   ArcElement
 );
 
-/* ================= COMPONENTS ================= */
+
 
 const DashboardCard = ({ icon, title, value, color }) => (
   <div className={`p-6 rounded-2xl text-white shadow-lg bg-gradient-to-r ${color}`}>
@@ -55,19 +56,19 @@ const InfoRow = ({ label, value }) => (
   </div>
 );
 
-/* 🔥 FIXED TREND CHART */
+/* TREND CHART */
 const TrendCard = ({ title, icon, data }) => {
   const labels = data
     ? Object.keys(data).map((label) => {
-        if (label.length <= 3) return label;
-        const d = new Date(label);
-        return isNaN(d)
-          ? label
-          : d.toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "short",
-            });
-      })
+      if (label.length <= 3) return label;
+      const d = new Date(label);
+      return isNaN(d)
+        ? label
+        : d.toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+        });
+    })
     : [];
 
   const values = data ? Object.values(data) : [];
@@ -128,12 +129,12 @@ const TrendCard = ({ title, icon, data }) => {
   );
 };
 
-/* 🔥 FIXED PIE CHART */
+/* PIE CHART */
 const PieChartCard = ({ data }) => {
   const labels = data ? Object.keys(data) : [];
   const values = data ? Object.values(data) : [];
 
-  // ✅ UNIQUE COLORS (no repeats)
+
   const colors = [
     "#6366f1",
     "#22c55e",
@@ -153,7 +154,7 @@ const PieChartCard = ({ data }) => {
       {
         data: values,
         backgroundColor: colors.slice(0, labels.length),
-        borderWidth: 0, // ✅ REMOVE GAP
+        borderWidth: 0,
       },
     ],
   };
@@ -189,7 +190,6 @@ const PieChartCard = ({ data }) => {
   );
 };
 
-/* ================= MAIN ================= */
 
 function AdminDashboard() {
   const [stats, setStats] = useState(null);
@@ -204,22 +204,17 @@ function AdminDashboard() {
       const statsRes = await getAdminStatsAPI();
       if (statsRes.status === 200) setStats(statsRes.data);
 
-      const token = sessionStorage.getItem("token");
+      const trendRes = await getAdminEnergyTrendAPI();
 
-      const trendRes = await axios.get(
-        `${server_url}/api/admin/energy-trend`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (trendRes.status === 200) setTrend(trendRes.data);
+      if (trendRes.status === 200) {
+        setTrend(trendRes.data);
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  // ✅ KEEP YOUR LOADING (NOT REMOVED)
+  // LOADING
   if (!stats || !trend) {
     return (
       <div className="text-center text-gray-500 dark:text-gray-400">
