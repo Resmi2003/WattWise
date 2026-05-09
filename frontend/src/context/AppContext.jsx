@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   getAppliancesAPI,
@@ -14,16 +15,41 @@ const AppContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
 
 
   // Dark Mode
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("theme") === "dark";
   });
-  // const [darkMode, setDarkMode] = useState(false);
 
-  // Token (sessionStorage)
+
   const [token, setToken] = useState(sessionStorage.getItem("token"));
+
+
+
+  const fetchUnreadCount = async () => {
+    const token = sessionStorage.getItem("token");
+
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/notifications",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const count = res.data.filter(n => !n.isRead).length;
+      setUnreadCount(count);
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
 
   // Fetch Appliances
   const fetchAppliances = async () => {
@@ -57,21 +83,7 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
-  // const fetchUser = async () => {
-  //   try {
-  //     const res = await getProfileAPI();
 
-  //     console.log("USER RESPONSE:", res);
-
-  //     if (res.status === 200) {
-  //       setUser(res.data);
-  //       return res.data;
-  //     }
-
-  //   } catch (err) {
-  //     console.error("Error fetching user:", err);
-  //   }
-  // };
 
   const fetchUser = async () => {
     try {
@@ -103,7 +115,7 @@ const AppContextProvider = ({ children }) => {
       fetchAppliances();
       fetchUsage();
       fetchUser();
-    } else{
+    } else {
       setUserLoading(false);
     }
   }, []);
@@ -114,11 +126,18 @@ const AppContextProvider = ({ children }) => {
       fetchAppliances();
       fetchUsage();
       fetchUser();
-    } else{
+    } else {
       setUser(null);
       setUserLoading(false);
     }
   }, [token]);
+
+
+  useEffect(() => {
+  if (token) {
+    fetchUnreadCount();
+  }
+}, [token]);
 
   // APPLY DARK MODE
   useEffect(() => {
@@ -131,17 +150,7 @@ const AppContextProvider = ({ children }) => {
     }
   }, [darkMode]);
 
-  // useEffect(() => {
-  //   if (!token) return; // only after login
-
-  //   if (darkMode) {
-  //     document.documentElement.classList.add("dark");
-  //     localStorage.setItem("theme", "dark");
-  //   } else {
-  //     document.documentElement.classList.remove("dark");
-  //     localStorage.setItem("theme", "light");
-  //   }
-  // }, [darkMode, token]);
+  
 
 
 
@@ -164,7 +173,10 @@ const AppContextProvider = ({ children }) => {
         setToken,
         user,
         setUser,
-        userLoading
+        userLoading,
+        unreadCount,
+        fetchUnreadCount
+
       }}
     >
       {children}

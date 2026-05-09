@@ -6,8 +6,7 @@ import {
   addUsageAPI,
   getUsageAPI,
   deleteUsageAPI,
-  getAppliancesAPI,
-  addNotificationAPI
+  getAppliancesAPI
 } from "../../services/allAPI";
 
 function UsageLog() {
@@ -18,7 +17,9 @@ function UsageLog() {
     usageLogs,
     setUsageLogs,
     fetchUser,
-    user
+    user,
+    fetchUnreadCount
+
   } = useAppContext();
 
   const [selectedId, setSelectedId] = useState("");
@@ -168,23 +169,29 @@ function UsageLog() {
     if (userSettings?.notifications !== false) {
 
       if (goalExceeded) {
-        await addNotificationAPI(
-          {
-            message: `Daily Goal Exceeded: You used ${updatedTodayUsage.toFixed(2)} kWh today`,
-            date: new Date().toISOString()
-          },
-          reqHeader
-        );
+        // await addNotificationAPI(
+        //   {
+        //     message: `Daily Goal Exceeded: You used ${updatedTodayUsage.toFixed(2)} kWh today`,
+        //     date: new Date().toISOString()
+        //   },
+        //   reqHeader
+        // );
+
+        // await fetchUnreadCount();
+
       }
 
       if (monthlyExceeded) {
-        await addNotificationAPI(
-          {
-            message: `Monthly Limit Exceeded: You used ${updatedMonthlyUsage.toFixed(2)} kWh this month`,
-            date: new Date().toISOString()
-          },
-          reqHeader
-        );
+        // await addNotificationAPI(
+        //   {
+        //     message: `Monthly Limit Exceeded: You used ${updatedMonthlyUsage.toFixed(2)} kWh this month`,
+        //     date: new Date().toISOString()
+        //   },
+        //   reqHeader
+        // );
+
+        // await fetchUnreadCount();
+
       }
     }
 
@@ -199,10 +206,13 @@ function UsageLog() {
 
       // ENERGY ALERT
       if (energyValue > userSettings.energyThreshold) {
-        await addNotificationAPI({
-          message: `High Energy Usage: ${appliance.name} used ${energyValue} kWh`,
-          date: new Date().toISOString()
-        }, reqHeader);
+        // await addNotificationAPI({
+        //   message: `High Energy Usage: ${appliance.name} used ${energyValue} kWh`,
+        //   date: new Date().toISOString()
+        // }, reqHeader);
+
+        // await fetchUnreadCount();
+
       }
 
 

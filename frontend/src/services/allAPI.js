@@ -57,15 +57,31 @@ export const deleteUsageAPI = async (id) => {
   return await commonAPI("DELETE", `${server_url}/api/usage/${id}`, {});
 };
 
-// ================NOTIFICATION==================
+
+
+
+
+// ==============================NOTIFICATIONS================================
+
+// CREATE
 export const addNotificationAPI = (data, headers) => {
-  return commonAPI("POST", "/notification/add", data, headers);
+  return commonAPI("POST", `${server_url}/api/notifications`, data, headers);
 };
 
+// GET
 export const getNotificationAPI = (headers) => {
-  return commonAPI("GET", "/notification/get", "", headers);
+  return commonAPI("GET", `${server_url}/api/notifications`, "", headers);
 };
 
+// MARK ONE AS READ
+export const updateNotificationAPI = (id, headers) => {
+  return commonAPI("PUT", `${server_url}/api/notifications/${id}`, {}, headers);
+};
+
+// MARK ALL AS READ
+export const markAllAsReadAPI = (headers) => {
+  return commonAPI("PUT", `${server_url}/api/notifications/clear-all`, {}, headers);
+};
 
 
 // ====================PROFILE===========================

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 import { Moon, Sun, User, Settings, LogOut } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -6,19 +7,54 @@ import { FaBell } from "react-icons/fa";
 
 function Navbar() {
 
-  const { user } = useAppContext();
-  const { darkMode, setDarkMode, unreadCount } = useAppContext();
+  const { user, darkMode, setDarkMode, unreadCount, fetchUnreadCount } = useAppContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [openMenu, setOpenMenu] = useState(false);
 
+  // const fetchUnread = async () => {
+  //   const token = sessionStorage.getItem("token");
+
+  //   try {
+  //     const res = await axios.get(
+  //       "http://localhost:5000/api/notifications",
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       }
+  //     );
+
+  //     const count = res.data.filter(n => !n.isRead).length;
+  //     setUnread(count);
+
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+
+
+  useEffect(() => {
+    fetchUnreadCount();
+
+    const interval = setInterval(() => {
+      fetchUnreadCount();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+
+
   const isAdmin = user?.role === "admin";
 
-  // ✅ Dynamic Page Title
+  // Dynamic Page Title
   const getPageTitle = () => {
     const path = location.pathname;
 
-    // 🔴 ADMIN ROUTES
+    // ADMIN ROUTES
     if (path.startsWith("/admin")) {
       if (path.includes("dashboard")) return "Dashboard";
       if (path.includes("users")) return "User Management";
@@ -29,7 +65,7 @@ function Navbar() {
       return "Admin Panel";
     }
 
-    // 🟢 USER ROUTES
+    // USER ROUTES
     if (path === "/dashboard") return "Dashboard";
     if (path === "/appliances") return "Appliances";
     if (path === "/usage-log") return "Usage Log";
@@ -41,7 +77,7 @@ function Navbar() {
     return "WattWise";
   };
 
-  // 🔐 Logout
+  // Logout
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     navigate("/login");
@@ -57,10 +93,12 @@ function Navbar() {
 
       <div className="flex items-center gap-4 relative">
 
-        {/* 🔔 Notifications (ONLY USER) */}
+        {/* Notifications (ONLY USER) */}
         {!isAdmin && (
           <button
-            onClick={() => navigate("/notifications")}
+            onClick={() => {
+              navigate("/notifications");
+            }}
             className="relative p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:scale-105 transition"
           >
             <FaBell size={18} className="text-gray-700 dark:text-gray-200" />
@@ -73,7 +111,7 @@ function Navbar() {
           </button>
         )}
 
-        {/* 👤 Profile (ONLY USER) */}
+        {/* Profile (ONLY USER) */}
         {!isAdmin && (
           <div className="relative z-50">
             <button
@@ -108,7 +146,7 @@ function Navbar() {
                   Settings
                 </button>
 
-                {/* ✅ USER LOGOUT WITH ICON */}
+                {/* USER LOGOUT WITH ICON */}
                 <button
                   onClick={() => {
                     handleLogout();
@@ -125,7 +163,7 @@ function Navbar() {
           </div>
         )}
 
-        {/* 🔴 ADMIN LOGOUT WITH ICON */}
+        {/* ADMIN LOGOUT WITH ICON */}
         {isAdmin && (
           <button
             onClick={handleLogout}
@@ -136,7 +174,7 @@ function Navbar() {
           </button>
         )}
 
-        {/* 🌙 Theme Toggle */}
+        {/* Theme Toggle */}
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:scale-105 transition"

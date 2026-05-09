@@ -137,16 +137,13 @@ function Settings() {
       const res = await updateProfileAPI({ settings });
 
       if (res.status === 200) {
-        showToast("Settings updated", "success");
 
         // update global user
         const updatedUser = res.data;
 
         // update context user
         if (updatedUser) {
-          // update context (AppContext)
-          window.location.reload();
-          // (simple method for now — guaranteed sync)
+          showToast("Settings updated successfully", "success");
         }
 
         setHasChanges(false);
@@ -388,7 +385,9 @@ function Settings() {
               onChange={(e) => {
                 setSettings(prev => ({
                   ...prev,
-                  energyThreshold: Math.max(0, Number(e.target.value))
+                  energyThreshold: e.target.value
+                    ? Math.max(0, Number(e.target.value))
+                    : ""
                 }));
                 setHasChanges(true);
               }}

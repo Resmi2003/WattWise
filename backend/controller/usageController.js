@@ -21,15 +21,18 @@ exports.addUsageController = async (req, res) => {
 
         await userController.updateAchievements(req.payload)
 
-        // Notification logic (LOWERCASE VARIABLE)
+        // Notification logic
         // Fetch user settings
         const user = await userModel.findById(req.payload)
 
         // Safety check
-        if (
-            user?.settings?.energyThreshold &&
-            Number(energy) > user.settings.energyThreshold
-        ) {
+        const threshold = user?.settings?.energyThreshold || 5
+
+        const notificationsEnabled =
+            user?.settings?.notifications ?? true
+
+        if (notificationsEnabled && Number(energy) > threshold) {
+
             await notification.create({
                 userId: req.payload,
                 message: `High energy usage detected (${energy} kWh)`
@@ -52,7 +55,7 @@ exports.getUsageController = async (req, res) => {
 
         const logs = await usageLogs.find({
             userId: req.payload
-        })
+        }).sort({ createdAt: -1 })
 
         res.status(200).json(logs)
 

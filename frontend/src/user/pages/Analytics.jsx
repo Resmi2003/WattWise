@@ -2,184 +2,333 @@ import React from "react";
 import { useAppContext } from "../../context/AppContext";
 
 import {
-    FaChartLine,
-    FaMedal,
-    FaExclamationTriangle,
-    FaLightbulb,
-    FaBolt
+    FaBolt,
+    FaChartPie,
+    FaCircle,
 } from "react-icons/fa";
 
 function Analytics() {
 
     const { usageLogs } = useAppContext();
 
+    // ================= EMPTY =================
+
     if (!usageLogs || usageLogs.length === 0) {
+
         return (
-            <div className="text-center text-gray-500 dark:text-gray-400 mt-10">
-                No data available. Add usage logs to see analytics.
+
+            <div className="min-h-[70vh] flex items-center justify-center">
+
+                <div className="text-center">
+
+                    <div className="w-24 h-24 rounded-full bg-cyan-100 dark:bg-cyan-900/20 flex items-center justify-center mx-auto mb-6">
+
+                        <FaChartPie className="text-4xl text-cyan-500" />
+
+                    </div>
+
+                    <h2 className="text-3xl font-black text-gray-900 dark:text-white">
+                        No Analytics Data
+                    </h2>
+
+                    <p className="mt-3 text-gray-500 dark:text-gray-400">
+                        Add usage logs to generate analytics.
+                    </p>
+
+                </div>
+
             </div>
         );
     }
 
+    // ================= TOTAL ENERGY =================
 
-    // total energy
     const totalEnergy = usageLogs.reduce((sum, log) => {
         return sum + Number(log.energy || 0);
     }, 0);
 
+    // ================= APPLIANCE ENERGY =================
 
-    // energy by appliance
     const applianceEnergy = {};
 
     usageLogs.forEach((log) => {
+
         if (!applianceEnergy[log.applianceName]) {
             applianceEnergy[log.applianceName] = 0;
         }
+
         applianceEnergy[log.applianceName] += Number(log.energy || 0);
+
     });
 
+    // ================= CONTRIBUTION =================
 
-    // top appliance
+    const contribution = Object.entries(applianceEnergy)
+        .map(([name, energy]) => ({
+            name,
+            energy,
+            percent: totalEnergy
+                ? ((energy / totalEnergy) * 100).toFixed(1)
+                : 0,
+        }))
+        .sort((a, b) => b.energy - a.energy);
+
+    // ================= TOP APPLIANCE =================
+
     let topAppliance = "None";
     let maxEnergy = 0;
 
     Object.entries(applianceEnergy).forEach(([name, energy]) => {
+
         if (energy > maxEnergy) {
             maxEnergy = energy;
             topAppliance = name;
         }
+
     });
 
+    // ================= SCORE =================
 
-    // Contribution %
-    const contribution = Object.entries(applianceEnergy).map(([name, energy]) => ({
-        name,
-        energy,
-        percent: totalEnergy ? ((energy / totalEnergy) * 100).toFixed(1) : 0
-    }));
-
-
-    // Predicted weekly energy
-    const predictedWeekly =
-        usageLogs.length > 0
-            ? (totalEnergy / usageLogs.length) * 7
-            : 0;
-
-
-    // Dynamic efficiency score
     let efficiencyScore = 100;
 
-    if (predictedWeekly > 0) {
-        efficiencyScore = 100 - (totalEnergy / predictedWeekly) * 50;
+    if (totalEnergy > 0) {
+        efficiencyScore = 100 - totalEnergy * 2;
     }
 
-    efficiencyScore = Math.max(10, Math.min(100, efficiencyScore));
+    efficiencyScore = Math.max(
+        10,
+        Math.min(100, efficiencyScore)
+    );
 
+    // ================= BADGE =================
 
-    // Badge
     let badge = "Eco Saver";
-    let badgeColor = "text-green-600";
 
     if (efficiencyScore < 40) {
-        badge = "High Consumption";
-        badgeColor = "text-red-500";
+        badge = "High Usage";
     }
+
     else if (efficiencyScore < 70) {
-        badge = "Energy Aware";
-        badgeColor = "text-yellow-500";
+        badge = "Balanced";
     }
-
-
-    // alert
-    let alertMessage = null;
-
-    if (efficiencyScore < 40) {
-        alertMessage =
-            "Your home energy consumption is unusually high. Consider reducing appliance usage.";
-    }
-
-
-    // Appliance ranking
-    const ranking = Object.entries(applianceEnergy)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
-
-
-    // pattern
-    let patternInsight = "Your energy usage pattern is balanced.";
-
-    if (topAppliance !== "None") {
-        patternInsight = `${topAppliance} is currently the highest energy consuming appliance. Monitoring its usage may help reduce electricity consumption.`;
-    }
-
-
-    // tip
-    let tip =
-        "Regularly reviewing appliance usage can help improve overall energy efficiency.";
-
-    if (topAppliance !== "None") {
-        tip = `Consider optimizing the usage of ${topAppliance} to reduce overall energy consumption.`;
-    }
-
-
 
     return (
 
-        <div className="space-y-8">
+        <div className="min-h-screen text-gray-900 dark:text-white overflow-hidden">
 
+            {/* ================= MAIN WRAPPER ================= */}
 
+            <div className="relative overflow-hidden rounded-[40px] border border-gray-200 dark:border-[#1e293b] bg-gradient-to-br from-[#f8fafc] via-[#eef2ff] to-[#f0f9ff] dark:from-[#020617] dark:via-[#0f172a] dark:to-[#111827] p-7 md:p-12 shadow-2xl">
 
-            <div className="grid md:grid-cols-2 gap-6">
+                {/* GLOW */}
 
-                <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 rounded-xl p-6 shadow-sm flex items-center gap-4">
+                <div className="absolute -top-40 left-0 w-[500px] h-[500px] bg-cyan-400/10 blur-[140px] rounded-full"></div>
 
-                    <div className="p-4 rounded-lg bg-blue-100 text-blue-600 text-2xl">
-                        <FaChartLine />
-                    </div>
+                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-violet-500/10 blur-[140px] rounded-full"></div>
 
-                    <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Predicted Weekly Energy
-                        </p>
+                <div className="relative z-10">
 
-                        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-                            {predictedWeekly.toFixed(2)} kWh
-                        </h2>
-                    </div>
+                    {/* ================= HEADER ================= */}
 
-                </div>
+                    <div className="flex items-center justify-between flex-wrap gap-5">
 
+                        <div>
 
-                <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 rounded-xl p-6 shadow-sm flex items-center gap-4">
-
-                    <div className="p-4 rounded-lg bg-yellow-100 text-yellow-600 text-2xl">
-                        <FaMedal />
-                    </div>
-
-                    <div className="w-full">
-
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Energy Efficiency Badge
-                        </p>
-
-                        <h2 className={`text-xl font-bold ${badgeColor}`}>
-                            {badge}
-                        </h2>
-
-                        <div className="mt-3">
-
-                            <p className="text-xs text-gray-400 mb-1">
-                                Energy Efficiency Score
+                            <p className="uppercase tracking-[0.3em] text-xs font-black text-cyan-500 mb-4">
+                                Smart Analytics
                             </p>
 
-                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <h1 className="text-4xl md:text-6xl font-black leading-tight text-gray-900 dark:text-white">
+                                Energy Insights
+                            </h1>
 
-                                <div
-                                    className="bg-green-500 h-2 rounded-full"
-                                    style={{ width: `${efficiencyScore}%` }}
-                                ></div>
+                        </div>
+
+                        <div className="px-6 py-4 rounded-3xl bg-white/70 dark:bg-white/[0.04] backdrop-blur-2xl border border-white/30 dark:border-white/10 shadow-lg">
+
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Highest Consumption
+                            </p>
+
+                            <h2 className="text-2xl font-black text-cyan-500 mt-1">
+                                {topAppliance}
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                    {/* ================= CENTER VISUAL ================= */}
+
+                    <div className="mt-16 flex flex-col items-center justify-center">
+
+                        <div className="relative w-[320px] h-[320px]">
+
+                            {/* OUTER */}
+
+                            <div className="absolute inset-0 rounded-full border-[14px] border-cyan-100 dark:border-cyan-500/10"></div>
+
+                            {/* MIDDLE */}
+
+                            <div className="absolute inset-[28px] rounded-full border-[10px] border-violet-100 dark:border-violet-500/10"></div>
+
+                            {/* INNER */}
+
+                            <div className="absolute inset-[55px] rounded-full bg-gradient-to-br from-cyan-500 via-sky-500 to-violet-500 shadow-[0_0_80px_rgba(6,182,212,0.35)] flex flex-col items-center justify-center text-white">
+
+                                <span className="uppercase tracking-[0.25em] text-xs text-white/70">
+                                    Efficiency
+                                </span>
+
+                                <h2 className="text-7xl font-black mt-2">
+                                    {efficiencyScore.toFixed(0)}
+                                </h2>
+
+                                <p className="mt-2 text-sm text-white/80">
+                                    {badge}
+                                </p>
 
                             </div>
+
+                            {/* FLOATING STATS */}
+
+                            <div className="absolute -left-14 top-12 px-5 py-4 rounded-3xl bg-white/80 dark:bg-[#111827]/80 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-2xl">
+
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    Total Energy
+                                </p>
+
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white mt-1">
+                                    {totalEnergy.toFixed(1)}
+                                </h3>
+
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                    kWh
+                                </span>
+
+                            </div>
+
+                            <div className="absolute -right-16 bottom-10 px-5 py-4 rounded-3xl bg-white/80 dark:bg-[#111827]/80 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-2xl">
+
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    Status
+                                </p>
+
+                                <h3 className="text-2xl font-black text-cyan-500 mt-1">
+                                    {badge}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        {/* ================= APPLIANCE CHIPS ================= */}
+
+                        <div className="mt-14 flex flex-wrap justify-center gap-4 max-w-5xl">
+
+                            {contribution.map((item, index) => (
+
+                                <div
+                                    key={index}
+                                    className="group px-5 py-4 rounded-3xl bg-white/70 dark:bg-white/[0.04] backdrop-blur-2xl border border-white/30 dark:border-white/10 shadow-lg hover:scale-105 transition-all duration-300"
+                                >
+
+                                    <div className="flex items-center gap-4">
+
+                                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-violet-500 flex items-center justify-center text-white shadow-lg">
+
+                                            <FaBolt />
+
+                                        </div>
+
+                                        <div>
+
+                                            <h3 className="font-bold text-gray-900 dark:text-white">
+                                                {item.name}
+                                            </h3>
+
+                                            <div className="flex items-center gap-2 mt-1">
+
+                                                <FaCircle className="text-[8px] text-cyan-500" />
+
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {item.percent}% Usage
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            ))}
+
+                        </div>
+
+                    </div>
+
+                    {/* ================= TIMELINE ================= */}
+
+                    <div className="mt-20">
+
+                        <div className="flex items-center justify-between mb-8">
+
+                            <div>
+
+                                <h2 className="text-3xl font-black text-gray-900 dark:text-white">
+                                    Consumption Overview
+                                </h2>
+
+                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    Appliance-wise electricity usage
+                                </p>
+
+                            </div>
+
+                            <FaBolt className="text-3xl text-cyan-500" />
+
+                        </div>
+
+                        <div className="space-y-6">
+
+                            {contribution.map((item, index) => (
+
+                                <div key={index}>
+
+                                    <div className="flex items-center justify-between mb-3">
+
+                                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                                            {item.name}
+                                        </h3>
+
+                                        <div className="flex items-center gap-3">
+
+                                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                {item.energy.toFixed(2)} kWh
+                                            </span>
+
+                                            <span className="text-cyan-500 font-black">
+                                                {item.percent}%
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className="w-full h-[12px] rounded-full bg-gray-200 dark:bg-[#1e293b] overflow-hidden">
+
+                                        <div
+                                            className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-sky-500 to-violet-500"
+                                            style={{ width: `${item.percent}%` }}
+                                        ></div>
+
+                                    </div>
+
+                                </div>
+
+                            ))}
 
                         </div>
 
@@ -188,121 +337,6 @@ function Analytics() {
                 </div>
 
             </div>
-
-
-            {/* alert */}
-
-            {alertMessage && (
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700/50 rounded-xl p-6 flex items-center gap-4">
-
-                    <div className="text-red-500 text-2xl">
-                        <FaExclamationTriangle />
-                    </div>
-
-                    <p className="text-red-700 dark:text-red-400 font-medium">
-                        {alertMessage}
-                    </p>
-
-                </div>
-            )}
-
-
-            {/* Top Appliances */}
-
-            <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 rounded-xl p-6 shadow-sm">
-
-                <h2 className="flex items-center gap-2 font-semibold mb-4 text-gray-800 dark:text-white">
-                    <FaBolt />
-                    Top Energy Consuming Appliances
-                </h2>
-
-                <ul className="space-y-2">
-
-                    {ranking.map(([name, energy], index) => (
-
-                        <li
-                            key={index}
-                            className="flex justify-between border-b border-gray-200 dark:border-gray-700 pb-2 text-gray-700 dark:text-gray-300"
-                        >
-
-                            <span>{name}</span>
-
-                            <span className="font-semibold">
-                                {energy.toFixed(2)} kWh
-                            </span>
-
-                        </li>
-
-                    ))}
-
-                </ul>
-
-            </div>
-
-
-            {/* Energy Distribution */}
-
-            <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 rounded-xl p-6 shadow-sm">
-
-                <h2 className="font-semibold mb-4 text-gray-800 dark:text-white">
-                    Energy Contribution by Appliance
-                </h2>
-
-                <ul className="space-y-2">
-
-                    {contribution.map((item, index) => (
-
-                        <li
-                            key={index}
-                            className="flex justify-between text-gray-700 dark:text-gray-300"
-                        >
-
-                            <span>{item.name}</span>
-
-                            <span className="font-semibold">
-                                {item.percent}%
-                            </span>
-
-                        </li>
-
-                    ))}
-
-                </ul>
-
-            </div>
-
-
-            {/* pattern */}
-
-            <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 rounded-xl p-6 shadow-sm">
-
-                <h2 className="flex items-center gap-2 font-semibold mb-3 text-gray-800 dark:text-white">
-                    <FaLightbulb />
-                    Usage Pattern Insight
-                </h2>
-
-                <p className="text-gray-600 dark:text-gray-300">
-                    {patternInsight}
-                </p>
-
-            </div>
-
-
-            {/* tip */}
-
-            <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 rounded-xl p-6 shadow-sm">
-
-                <h2 className="flex items-center gap-2 font-semibold mb-3 text-gray-800 dark:text-white">
-                    <FaLightbulb />
-                    Energy Saving Recommendation
-                </h2>
-
-                <p className="text-gray-600 dark:text-gray-300">
-                    {tip}
-                </p>
-
-            </div>
-
 
         </div>
     );

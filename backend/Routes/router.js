@@ -6,11 +6,7 @@ const jwtMiddleware = require('../middleware/jwtMiddleware')
 const usageController = require('../controller/usageController')
 const multerConfig = require('../middleware/multerMiddleware')
 const adminMiddleware = require('../middleware/adminMiddleware')
-const {
-    getNotifications,
-    markAsRead
-} = require("../controller/notificationController");
-
+const notificationController = require("../controller/notificationController");
 
 const router = new express.Router()
 
@@ -99,10 +95,31 @@ router.get(
 
 
 
-// =====================NOTIFICATION==================
-// router.get('/notifications', jwtMiddleware, getNotificationController)
-// router.put('/notifications/:id', jwtMiddleware, markAsRead)
+// ===================== NOTIFICATION ==================
+router.post(
+    "/notifications",
+    jwtMiddleware,
+    notificationController.createNotification
+);
 
+router.get(
+    "/notifications",
+    jwtMiddleware,
+    notificationController.getNotificationController
+);
+
+
+router.put(
+    "/notifications/clear-all",
+    jwtMiddleware,
+    notificationController.markAllAsRead
+);
+
+router.put(
+    "/notifications/:id",
+    jwtMiddleware,
+    notificationController.markAsRead
+);
 
 
 
@@ -195,10 +212,10 @@ router.get(
 
 //
 router.get(
-  '/admin/usage-logs',
-  jwtMiddleware,
-  adminMiddleware,
-  adminController.getAllUsageLogsController
+    '/admin/usage-logs',
+    jwtMiddleware,
+    adminMiddleware,
+    adminController.getAllUsageLogsController
 )
 
 
