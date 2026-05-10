@@ -33,9 +33,7 @@ const userSchema = new mongoose.Schema({
     },
     settings: {
         notifications: { type: Boolean, default: true },
-        energyThreshold: { type: Number, default: 5 },
-        dailyGoal: { type: Number, default: 2 },
-        monthlyLimit: { type: Number, default: 50 }
+        energyThreshold: { type: Number, default: 5 }
     }
 })
 

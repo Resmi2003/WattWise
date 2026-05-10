@@ -1,9 +1,9 @@
-import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   getAppliancesAPI,
   getUsageAPI,
-  getProfileAPI
+  getProfileAPI,
+  getNotificationAPI
 } from "../services/allAPI";
 
 export const AppContext = createContext();
@@ -29,19 +29,12 @@ const AppContextProvider = ({ children }) => {
 
 
   const fetchUnreadCount = async () => {
-    const token = sessionStorage.getItem("token");
-
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/notifications",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+
+      const res = await getNotificationAPI();
 
       const count = res.data.filter(n => !n.isRead).length;
+
       setUnreadCount(count);
 
     } catch (err) {
@@ -134,10 +127,23 @@ const AppContextProvider = ({ children }) => {
 
 
   useEffect(() => {
-  if (token) {
-    fetchUnreadCount();
-  }
-}, [token]);
+    if (token) {
+      fetchUnreadCount();
+    }
+  }, [token]);
+
+
+  // LOGOUT
+  const logout = () => {
+    sessionStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+    setAppliances([]);
+    setUsageLogs([]);
+  };
+
+
+
 
   // APPLY DARK MODE
   useEffect(() => {
@@ -150,7 +156,7 @@ const AppContextProvider = ({ children }) => {
     }
   }, [darkMode]);
 
-  
+
 
 
 
@@ -175,7 +181,8 @@ const AppContextProvider = ({ children }) => {
         setUser,
         userLoading,
         unreadCount,
-        fetchUnreadCount
+        fetchUnreadCount,
+        logout
 
       }}
     >
@@ -184,7 +191,7 @@ const AppContextProvider = ({ children }) => {
   );
 };
 
-// ✅ Custom Hook (UNCHANGED)
+// Custom Hook
 export const useAppContext = () => useContext(AppContext);
 
 export default AppContextProvider;

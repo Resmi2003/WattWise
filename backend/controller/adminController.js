@@ -419,9 +419,11 @@ exports.adminInsightsController = async (req, res) => {
         const totalEnergy = usageData.reduce((sum, item) => sum + Number(item.energy), 0)
         const avgEnergy = totalEnergy / usageData.length
 
-        // simple logic (lower avg = better efficiency)
-        let efficiencyScore = 100 - avgEnergy * 10
-        if (efficiencyScore < 0) efficiencyScore = 0
+        // logic (lower avg = better efficiency)
+        let efficiencyScore = 100 - (avgEnergy * 2)
+
+        if (efficiencyScore < 10) efficiencyScore = 10
+        if (efficiencyScore > 100) efficiencyScore = 100
 
         res.status(200).json({
             topAppliance: topAppliance

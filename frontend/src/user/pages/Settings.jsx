@@ -39,12 +39,9 @@ function Settings() {
 
   const [toast, setToast] = useState(null);
 
-  // 🔥 SETTINGS STATE
   const [settings, setSettings] = useState({
     notifications: true,
     energyThreshold: 5,
-    dailyGoal: 2,
-    monthlyLimit: 50
   });
 
   const [hasChanges, setHasChanges] = useState(false);
@@ -55,6 +52,7 @@ function Settings() {
   };
 
   const passwordCheck = validatePassword(newPass);
+  const showValidation = newPass.length > 0;
   const isPasswordMatch = newPass === confirmPass;
   const isDifferentFromOld = newPass !== oldPass;
 
@@ -289,41 +287,43 @@ function Settings() {
             </div>
 
             {/* VALIDATION */}
-            <div className="text-xs space-y-1">
+            {showValidation && (
+              <div className="text-xs space-y-1">
 
-              <p className={passwordCheck.rules.minLength ? "text-green-500" : "text-red-500"}>
-                • At least 8 characters
-              </p>
+                <p className={passwordCheck.rules.minLength ? "text-green-500" : "text-red-500"}>
+                  • At least 8 characters
+                </p>
 
-              <p className={passwordCheck.rules.hasUpper ? "text-green-500" : "text-red-500"}>
-                • One uppercase letter
-              </p>
+                <p className={passwordCheck.rules.hasUpper ? "text-green-500" : "text-red-500"}>
+                  • One uppercase letter
+                </p>
 
-              <p className={passwordCheck.rules.hasLower ? "text-green-500" : "text-red-500"}>
-                • One lowercase letter
-              </p>
+                <p className={passwordCheck.rules.hasLower ? "text-green-500" : "text-red-500"}>
+                  • One lowercase letter
+                </p>
 
-              <p className={passwordCheck.rules.hasNumber ? "text-green-500" : "text-red-500"}>
-                • One number
-              </p>
+                <p className={passwordCheck.rules.hasNumber ? "text-green-500" : "text-red-500"}>
+                  • One number
+                </p>
 
-              <p className={passwordCheck.rules.hasSpecial ? "text-green-500" : "text-red-500"}>
-                • One special character
-              </p>
+                <p className={passwordCheck.rules.hasSpecial ? "text-green-500" : "text-red-500"}>
+                  • One special character
+                </p>
 
-              {!isPasswordMatch && confirmPass && (
-                <p className="text-red-500">Passwords do not match</p>
-              )}
+                {!isPasswordMatch && confirmPass && (
+                  <p className="text-red-500">Passwords do not match</p>
+                )}
 
-              {!isDifferentFromOld && newPass && (
-                <p className="text-red-500">New password must be different</p>
-              )}
+                {!isDifferentFromOld && newPass && (
+                  <p className="text-red-500">New password must be different</p>
+                )}
 
-              {passwordCheck.isValid && isPasswordMatch && (
-                <p className="text-green-500">Strong password ready</p>
-              )}
+                {passwordCheck.isValid && isPasswordMatch && (
+                  <p className="text-green-500">Strong password ready</p>
+                )}
 
-            </div>
+              </div>
+            )}
 
             <button
               disabled={!isFormValid}
@@ -398,64 +398,22 @@ function Settings() {
         </div>
       </div>
 
-      {/* ENERGY GOALS */}
-      <div>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-          Energy Goals
-        </h2>
 
-        <div className="space-y-3">
 
-          <div>
-            <p className="text-sm">Daily Goal (kWh)</p>
-            <input
-              type="number"
-              min="0"
-              value={settings.dailyGoal}
-              onChange={(e) => {
-                setSettings(prev => ({
-                  ...prev,
-                  dailyGoal: Math.max(0, Number(e.target.value))
-                }));
-                setHasChanges(true);
-              }}
-              className="w-full p-2 mt-1 rounded bg-gray-50 dark:bg-gray-700"
-            />
-          </div>
 
-          <div>
-            <p className="text-sm">Monthly Limit (kWh)</p>
-            <input
-              type="number"
-              min="0"
-              value={settings.monthlyLimit}
-              onChange={(e) => {
-                setSettings(prev => ({
-                  ...prev,
-                  monthlyLimit: Math.max(0, Number(e.target.value))
-                }));
-                setHasChanges(true);
-              }}
-              className="w-full p-2 mt-1 rounded bg-gray-50 dark:bg-gray-700"
-            />
-          </div>
-
-        </div>
-
-        {hasChanges && (
-          <p className="text-sm text-yellow-500 flex items-center gap-2">
-            <Info size={14} /> You have unsaved changes
-          </p>
-        )}
-        <button
-          onClick={handleSaveSettings}
-          disabled={!hasChanges}
-          className={`mt-4 px-4 py-2 rounded-lg text-white 
+      {hasChanges && (
+        <p className="text-sm text-yellow-500 flex items-center gap-2">
+          <Info size={14} /> You have unsaved changes
+        </p>
+      )}
+      <button
+        onClick={handleSaveSettings}
+        disabled={!hasChanges}
+        className={`mt-4 px-4 py-2 rounded-lg text-white 
     ${hasChanges ? "bg-blue-600" : "bg-gray-400 cursor-not-allowed"}`}
-        >
-          Save Preferences
-        </button>
-      </div>
+      >
+        Save Preferences
+      </button>
 
       {/* LOGOUT */}
       <div>

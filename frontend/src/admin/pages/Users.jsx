@@ -126,11 +126,10 @@ function Users() {
 
                                                 <button
                                                     onClick={() => handleBlockToggle(user._id)}
-                                                    className={`px-3 py-1 rounded text-white ${
-                                                        user.isBlocked
+                                                    className={`px-3 py-1 rounded text-white ${user.isBlocked
                                                             ? "bg-green-500"
                                                             : "bg-yellow-500"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {user.isBlocked ? "Unblock" : "Block"}
                                                 </button>

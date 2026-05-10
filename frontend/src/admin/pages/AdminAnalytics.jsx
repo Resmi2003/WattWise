@@ -17,10 +17,17 @@ import {
 } from "lucide-react";
 
 
+const messageMap = {
+  "High energy usage detected": "System load spike detected",
+  "Today's energy consumption is high": "Today's system usage is high",
+  "One user is consuming majority energy": "One user is using most of the system"
+};
+
+
 
 function AdminAnalytics() {
 
-  const [logs, setLogs] = useState({});
+  const [logs, setLogs] = useState([]);
   const [insights, setInsights] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [alerts, setAlerts] = useState([]);
@@ -117,10 +124,13 @@ function AdminAnalytics() {
     let csv =
       "User,Appliance,Power(W),Hours,Energy(kWh),Date\n";
 
-    logs.forEach((log) => {
+    const sortedLogs = [...logs].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
 
-      const energy =
-        ((log.power || 0) * (log.hours || 0)) / 1000;
+
+    sortedLogs.forEach((log) => {
+      const energy = Number(log.energy || 0);
 
       csv +=
         `${log.userId?.username || "Unknown"},` +
@@ -207,12 +217,12 @@ function AdminAnalytics() {
           <th>Date</th>
         </tr>
 
-        ${logs.map((log) => {
+        ${[...logs]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .map((log) => {
+          const energy = Number(log.energy || 0);
 
-      const energy =
-        ((log.power || 0) * (log.hours || 0)) / 1000;
-
-      return `
+          return `
             <tr>
               <td>${log.userId?.username || "Unknown"}</td>
               <td>${log.applianceName || "N/A"}</td>
@@ -222,7 +232,7 @@ function AdminAnalytics() {
               <td>${new Date(log.createdAt).toLocaleString()}</td>
             </tr>
           `;
-    }).join("")}
+        }).join("")}
 
       </table>
 
@@ -239,6 +249,9 @@ function AdminAnalytics() {
 
 
 
+  const safeLeaderboard = [...leaderboard]
+    .sort((a, b) => (b.energy || 0) - (a.energy || 0))
+    .slice(0, 5);
 
 
 
@@ -362,12 +375,12 @@ function AdminAnalytics() {
             <div className="flex items-center gap-2 mb-3">
               <Gauge className="text-green-500" />
               <h3 className="font-semibold text-gray-700 dark:text-gray-200">
-                Efficiency Score
+                System Efficiency Index
               </h3>
             </div>
 
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {insights.efficiencyScore}%
+              {insights.efficiencyScore?.toFixed(1) ?? 0}%
             </p>
           </div>
 
@@ -385,7 +398,7 @@ function AdminAnalytics() {
         </div>
 
         {leaderboard.length > 0 ? (
-          leaderboard.slice(0, 5).map((user, i) => (
+          safeLeaderboard.map((user, i) => (
             <div key={i} className="flex justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-xl mb-2">
               <span>#{i + 1} {user.username}</span>
               <span>{user.energy} kWh</span>
@@ -405,7 +418,9 @@ function AdminAnalytics() {
         <div className="space-y-3">
 
           {alerts.length > 0 ? (
-            alerts.map((a, i) => {
+            (alerts || []).map((a, i) => {
+              const displayMessage =
+                messageMap?.[a.message] ?? a.message;
 
               const color =
                 a.type === "danger"
@@ -416,9 +431,12 @@ function AdminAnalytics() {
                       ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
                       : "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400";
 
+
+
+
               return (
                 <div key={i} className={`p-3 rounded-xl ${color}`}>
-                  {a.message}
+                  {displayMessage}
                 </div>
               );
             })

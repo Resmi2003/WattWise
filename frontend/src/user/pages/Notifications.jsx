@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAppContext } from "../../context/AppContext";
+import {
+  getNotificationAPI,
+  updateNotificationAPI,
+  markAllAsReadAPI
+} from "../../services/allAPI";
 
 function Notifications() {
 
@@ -9,20 +13,11 @@ function Notifications() {
 
   const { fetchUnreadCount } = useAppContext();
 
-  const token = sessionStorage.getItem("token");
 
   // FETCH NOTIFICATIONS
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/notifications",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
+      const res = await getNotificationAPI();
       setNotifications(Array.isArray(res.data) ? res.data : []);
 
     } catch (err) {
@@ -45,15 +40,7 @@ function Notifications() {
   // MARK AS READ
   const markAsRead = async (id) => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/notifications/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      await updateNotificationAPI(id);
 
       setNotifications((prev) =>
         prev.map((item) =>
@@ -74,15 +61,7 @@ function Notifications() {
   // MARK ALL AS READ
   const markAllAsRead = async () => {
     try {
-      await axios.put(
-        "http://localhost:5000/api/notifications/clear-all",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      await markAllAsReadAPI();
 
 
       setNotifications((prev) =>

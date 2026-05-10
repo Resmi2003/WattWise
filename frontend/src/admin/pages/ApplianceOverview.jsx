@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Trash2, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
-import { getAdminAppliancesAPI, deleteAdminApplianceAPI } from "../../services/allAPI";
+import { getAdminAppliancesAPI } from "../../services/allAPI";
 
 function ApplianceOverview() {
   const [appliances, setAppliances] = useState([]);
@@ -29,15 +29,7 @@ function ApplianceOverview() {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteAdminApplianceAPI(id);
 
-      setAppliances((prev) => prev.filter((a) => a._id !== id));
-    } catch (err) {
-      console.log("Delete error", err);
-    }
-  };
 
   const getStatusColor = (power) => {
     if (power > 1500) return "bg-red-500";
@@ -131,13 +123,6 @@ function ApplianceOverview() {
                           {item.power} W
                         </p>
                       </div>
-
-                      <button
-                        onClick={() => handleDelete(item._id)}
-                        className="text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 p-2 rounded-lg transition"
-                      >
-                        <Trash2 size={16} />
-                      </button>
 
                     </div>
 

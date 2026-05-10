@@ -5,6 +5,7 @@ const userModel = require('../model/userModel')
 const applianceModel = require('../model/applianceModel')
 const usageModel = require('../model/usageModel')
 const mongoose = require('mongoose')
+const notification = require('../model/notificationModel')
 
 
 // REGISTER
@@ -202,6 +203,7 @@ exports.deleteOwnAccountController = async (req, res) => {
         await userModel.findByIdAndDelete(userId)
         await applianceModel.deleteMany({ userId })
         await usageModel.deleteMany({ userId })
+        await notification.deleteMany({ userId })
 
         res.status(200).json("Account deleted successfully")
 
@@ -264,7 +266,3 @@ exports.updateAchievements = async (userId) => {
         console.log(err)
     }
 }
-
-
-
-
