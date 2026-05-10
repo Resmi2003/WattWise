@@ -43,7 +43,9 @@ function Dashboard() {
   }, [usageLogs, today]);
 
   const recentLogs = useMemo(() => {
-    return [...usageLogs].reverse().slice(0, 5);
+    return [...usageLogs]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 5);
   }, [usageLogs]);
 
   const avgEnergyPerLog = useMemo(() => {
@@ -537,7 +539,11 @@ function Dashboard() {
                     </h3>
 
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {log.date?.split("T")[0]}
+                      {new Date(log.date).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
 
                   </div>

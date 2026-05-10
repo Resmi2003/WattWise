@@ -96,6 +96,16 @@ export const updateProfileAPI = async (reqBody) => {
   return await commonAPI("PUT", `${server_url}/api/profile`, reqBody);
 };
 
+// upload profile image
+export const uploadProfileImageAPI = async (reqBody, reqHeader) => {
+  return await commonAPI(
+    "PUT",
+    `${server_url}/api/profile-image`,
+    reqBody,
+    reqHeader
+  );
+};
+
 
 
 // ================= SETTINGS / SECURITY =================

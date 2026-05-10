@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useAppContext } from "../../context/AppContext";
-import { updateProfileAPI } from "../../services/allAPI";
+import {
+  updateProfileAPI,
+  uploadProfileImageAPI,
+} from "../../services/allAPI";
 import {
   User,
   Edit3,
@@ -10,15 +13,18 @@ import {
   Award,
   Clock
 } from "lucide-react";
+import { server_url } from "../../services/server_url";
 
 function Profile() {
-  const { appliances, usageLogs, user, setUser } = useAppContext();
+  const { appliances, usageLogs, user, setUser, fetchUser } = useAppContext();
 
   const achievements = user?.achievements || [];
 
 
   const [editMode, setEditMode] = useState(false);
   const [username, setUsername] = useState("");
+  const [preview, setPreview] = useState("");
+
 
   useEffect(() => {
     if (user) setUsername(user.username || "");
@@ -42,22 +48,91 @@ function Profile() {
 
 
   // Recent activity (last 3 logs)
-  const recentLogs = usageLogs.slice(-3).reverse();
+  const recentLogs = [...usageLogs]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3);
+
+
+  const handleProfileImage = async (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // Preview image instantly
+    setPreview(URL.createObjectURL(file));
+
+    const formData = new FormData();
+
+    formData.append("profileImage", file);
+
+    const token = sessionStorage.getItem("token");
+
+    const reqHeader = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    };
+
+    try {
+
+      const result = await uploadProfileImageAPI(
+        formData,
+        reqHeader
+      );
+
+      if (result.status === 200) {
+
+        setUser(result.data);
+        await fetchUser();
+
+      }
+
+    } catch (err) {
+
+      console.log(err);
+
+    }
+  };
+
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-8">
 
       {/* HERO */}
-      <div className="rounded-3xl p-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 text-white shadow-lg">
-
+      <div className="rounded-3xl p-6 bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-700 dark:from-cyan-800 dark:via-slate-800 dark:to-blue-900 text-white shadow-lg border border-white/10">
         <div className="flex justify-between items-center">
 
           <div className="flex items-center gap-4">
 
             {/* Avatar */}
-            <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center">
-              <User />
-            </div>
+            <label className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center overflow-hidden cursor-pointer relative">
+
+              {preview || user?.profileImage ? (
+
+                <img
+                  src={
+                    preview
+                      ? preview
+                      : `${server_url}/uploads/${user.profileImage}`
+                  }
+                  alt="profile"
+                  className="w-full h-full object-cover"
+                />
+
+              ) : (
+
+                <User />
+
+              )}
+
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleProfileImage}
+              />
+
+            </label>
 
             {/* Info */}
             <div>

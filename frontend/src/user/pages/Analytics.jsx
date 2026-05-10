@@ -92,7 +92,7 @@ function Analytics() {
     let efficiencyScore = 100;
 
     if (totalEnergy > 0) {
-        efficiencyScore = 100 - totalEnergy * 2;
+        efficiencyScore = 100 - totalEnergy * 0.1;
     }
 
     efficiencyScore = Math.max(
