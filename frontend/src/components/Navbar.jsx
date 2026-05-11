@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 import { Moon, Sun, User, Settings, LogOut } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
+import { server_url } from "../services/server_url";
 
 function Navbar() {
 
@@ -12,26 +12,7 @@ function Navbar() {
   const location = useLocation();
   const [openMenu, setOpenMenu] = useState(false);
 
-  // const fetchUnread = async () => {
-  //   const token = sessionStorage.getItem("token");
 
-  //   try {
-  //     const res = await axios.get(
-  //       "http://localhost:5000/api/notifications",
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`
-  //         }
-  //       }
-  //     );
-
-  //     const count = res.data.filter(n => !n.isRead).length;
-  //     setUnread(count);
-
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
 
 
@@ -74,6 +55,9 @@ function Navbar() {
     if (path === "/profile") return "Profile";
     if (path === "/settings") return "Settings";
 
+    /* PREMIUM PAGE */
+    if (path === "/premium") return "";
+
     return "WattWise";
   };
 
@@ -87,8 +71,9 @@ function Navbar() {
     <div className="flex justify-between items-center px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
 
       {/* Title */}
+
       <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-        {getPageTitle()}
+        {location.pathname === "/premium" ? "" : getPageTitle()}
       </h2>
 
       <div className="flex items-center gap-4 relative">
@@ -116,9 +101,35 @@ function Navbar() {
           <div className="relative z-50">
             <button
               onClick={() => setOpenMenu(!openMenu)}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:scale-105 transition"
+              className="w-10 h-10 rounded-full overflow-hidden 
+  bg-gray-100 dark:bg-gray-700 hover:scale-105 transition 
+  flex items-center justify-center border border-gray-200 dark:border-gray-600"
             >
-              <User size={18} className="text-gray-700 dark:text-gray-200" />
+
+              {user?.profileImage ? (
+
+                <img
+                  src={
+                    user.profileImage.startsWith("http")
+                      ? user.profileImage
+                      : `${server_url}/uploads/${user.profileImage}`
+                  }
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+
+              ) : (
+
+                <div className="w-full h-full flex items-center justify-center 
+    bg-gradient-to-br from-cyan-500 to-blue-600 
+    text-white font-semibold text-sm">
+
+                  {user?.username?.charAt(0)?.toUpperCase() || "U"}
+
+                </div>
+
+              )}
+
             </button>
 
             {openMenu && (

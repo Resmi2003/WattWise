@@ -105,23 +105,28 @@ function Profile() {
           <div className="flex items-center gap-4">
 
             {/* Avatar */}
-            <label className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center overflow-hidden cursor-pointer relative">
+            <label className="w-20 h-20 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center overflow-hidden cursor-pointer relative">
 
               {preview || user?.profileImage ? (
 
                 <img
                   src={
-                    preview
-                      ? preview
+                    user?.profileImage?.startsWith("http")
+                      ? user.profileImage
                       : `${server_url}/uploads/${user.profileImage}`
                   }
-                  alt="profile"
+                  alt=""
                   className="w-full h-full object-cover"
                 />
 
               ) : (
 
-                <User />
+                <div className="w-full h-full flex items-center justify-center 
+  bg-gradient-to-br from-cyan-400 to-blue-600 text-white text-xl font-bold">
+
+                  {user?.username?.charAt(0)?.toUpperCase()}
+
+                </div>
 
               )}
 

@@ -4,6 +4,10 @@ import { useState } from "react";
 import { loginAPI } from "../../services/allAPI";
 import { useAppContext } from "../../context/AppContext";
 import { toast } from "react-toastify";
+import { GoogleLogin } from '@react-oauth/google'
+import { googleLoginAPI } from '../../services/allAPI'
+
+
 
 function Login() {
 
@@ -52,11 +56,49 @@ function Login() {
         "Invalid email or password"
       );
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
 
 
   };
+
+
+  // google login
+  const handleGoogleLogin = async (credentialResponse) => {
+
+    console.log(credentialResponse);
+
+    const reqBody = {
+      credential: credentialResponse.credential
+    }
+
+    try {
+
+      const result = await googleLoginAPI(reqBody)
+
+      console.log(result);
+
+      if (result.status === 200) {
+
+        sessionStorage.setItem("user", JSON.stringify(result.data.user))
+        sessionStorage.setItem("token", result.data.token)
+
+        setToken(result.data.token)
+        setUser(result.data.user)
+
+        toast.success("Google Login Success")
+
+        navigate('/dashboard')
+      }
+    } catch (err) {
+
+      console.log(err);
+
+      toast.error("Google Login Failed")
+    }
+  }
+
+
 
   return (
 
@@ -109,6 +151,15 @@ rounded-2xl shadow-2xl p-10 border border-white/40">
           </button>
 
         </form>
+
+        <div className='mt-4 flex justify-center'>
+          <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={() => {
+              toast.error("Google Login Failed")
+            }}
+          />
+        </div>
 
         <p className="text-sm text-center mt-6">
           Don't have an account?{" "}

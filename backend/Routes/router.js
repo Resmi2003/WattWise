@@ -7,6 +7,7 @@ const usageController = require('../controller/usageController')
 const multerConfig = require('../middleware/multerMiddleware')
 const adminMiddleware = require('../middleware/adminMiddleware')
 const notificationController = require("../controller/notificationController");
+const paymentController = require('../controller/paymentController')
 
 const router = new express.Router()
 
@@ -15,6 +16,9 @@ router.post('/register', userController.registerController)
 
 // login
 router.post('/login', userController.loginController)
+
+// google login
+router.post('/google-login', userController.googleLoginController)
 
 
 
@@ -120,6 +124,22 @@ router.put(
     jwtMiddleware,
     notificationController.markAsRead
 );
+
+
+
+
+// ======================= PAYMENT ======================
+router.post(
+    '/create-checkout-session',
+    jwtMiddleware,
+    paymentController.createCheckoutSessionController
+)
+
+router.put(
+    '/make-premium',
+    paymentController.makePremiumController
+)
+
 
 
 

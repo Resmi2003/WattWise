@@ -12,7 +12,11 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        default: ""
+    },
+    googleId: {
+        type: String,
+        default: ""
     },
     role: {
         type: String,
@@ -34,7 +38,11 @@ const userSchema = new mongoose.Schema({
     settings: {
         notifications: { type: Boolean, default: true },
         energyThreshold: { type: Number, default: 5 }
-    }
+    },
+    isPremium: {
+    type: Boolean,
+    default: false
+}
 })
 
 const users = mongoose.model("users", userSchema)

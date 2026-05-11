@@ -6,6 +6,11 @@ const applianceModel = require('../model/applianceModel')
 const usageModel = require('../model/usageModel')
 const mongoose = require('mongoose')
 const notification = require('../model/notificationModel')
+const { OAuth2Client } = require('google-auth-library')
+
+
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 
 // REGISTER
@@ -90,6 +95,58 @@ exports.loginController = async (req, res) => {
     }
 }
 
+
+// GOOGLE LOGIN
+exports.googleLoginController = async (req, res) => {
+
+    console.log("Inside Google Login Controller");
+
+    const { credential } = req.body
+
+    try {
+
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID
+        })
+
+        const payload = ticket.getPayload()
+
+        const { sub, name, email, picture } = payload
+        console.log(picture);
+
+        let existingUser = await users.findOne({ email })
+
+        if (!existingUser) {
+
+            existingUser = new users({
+                username: name,
+                email,
+                password: "",
+                profileImage: picture,
+                googleId: sub
+            })
+
+            await existingUser.save()
+        }
+
+        const token = jwt.sign(
+            { userId: existingUser._id },
+            process.env.JWT_SECRET
+        )
+
+        res.status(200).json({
+            user: existingUser,
+            token
+        })
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(401).json("Google Login Failed")
+    }
+}
 
 
 // ================= GET PROFILE =================
@@ -230,7 +287,7 @@ exports.updateAchievements = async (userId) => {
             (sum, log) => sum + Number(log.energy),
             0
         )
-        
+
         // average energy per usage
         const avgEnergy = usageCount > 0 ? totalEnergy / usageCount : 0
 

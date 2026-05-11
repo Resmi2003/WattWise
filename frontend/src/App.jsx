@@ -17,6 +17,10 @@ import AdminProtect from "./routes/AdminProtect";
 import UserProtect from "./routes/UserProtect";
 import ApplianceOverview from "./admin/pages/ApplianceOverview";
 import AdminAnalytics from "./admin/pages/AdminAnalytics";
+import Premium from "./user/pages/Premium";
+import PaymentSuccess from "./user/pages/PaymentSuccess";
+import PaymentCancel from "./user/pages/PaymentCancel";
+import PageNotFound from "./auth/PageNotFound";
 
 
 function App() {
@@ -29,6 +33,10 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancel" element={<PaymentCancel />} />
+
+
 
           {/* USER ROUTES */}
           <Route
@@ -45,6 +53,7 @@ function App() {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/premium" element={<Premium />} />
           </Route>
 
           {/* ADMIN ROUTES */}
@@ -87,6 +96,9 @@ function App() {
             />
 
           </Route>
+
+          <Route path="*" element={<PageNotFound />} />
+
 
         </Routes>
       </Router>

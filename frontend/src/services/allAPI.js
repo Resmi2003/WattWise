@@ -15,7 +15,7 @@ export const loginAPI = async (reqBody) => {
 
 // google login
 export const googleLoginAPI = async (reqBody) => {
-  return await commonAPI("POST", `${server_url}/api/user/google-login`, reqBody);
+  return await commonAPI("POST", `${server_url}/api/google-login`, reqBody);
 };
 
 // ================= APPLIANCES =================
@@ -207,5 +207,27 @@ export const deleteAdminApplianceAPI = async (id) => {
     "DELETE",
     `${server_url}/api/admin/appliances/${id}`,
     {}
+  );
+};
+
+
+
+// ================= PREMIUM PAYMENT =================
+
+// create stripe checkout session
+export const createCheckoutSessionAPI = async () => {
+  return await commonAPI(
+    "POST",
+    `${server_url}/api/create-checkout-session`,
+    {}
+  );
+};
+
+// make user premium
+export const makePremiumAPI = async (reqBody) => {
+  return await commonAPI(
+    "PUT",
+    `${server_url}/api/make-premium`,
+    reqBody
   );
 };

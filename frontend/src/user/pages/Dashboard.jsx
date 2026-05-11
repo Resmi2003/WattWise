@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
+import { Link } from "react-router-dom";
 import {
   Zap,
   BarChart3,
@@ -10,7 +11,11 @@ import {
   Flame,
   Lightbulb,
   CalendarDays,
+  Crown,
+  ShieldCheck
 } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 import EnergyChart from "../components/EnergyChart";
 
@@ -18,7 +23,7 @@ function Dashboard() {
 
   // ================= CONTEXT =================
 
-  const { appliances, usageLogs } = useAppContext();
+  const { appliances, usageLogs, user } = useAppContext();
 
   // ================= DATE =================
 
@@ -148,6 +153,53 @@ function Dashboard() {
     return top;
   };
 
+  // download pdf report (premium users)
+  const downloadPDFReport = () => {
+
+    const doc = new jsPDF();
+
+    doc.setFontSize(22);
+
+    doc.text("WattWise Energy Report", 14, 20);
+
+    doc.setFontSize(12);
+
+    doc.text(`User: ${user?.username || "User"}`, 14, 35);
+
+    doc.text(`Total Appliances: ${appliances.length}`, 14, 45);
+
+    doc.text(
+      `Total Energy Consumption: ${totalEnergy.toFixed(2)} kWh`,
+      14,
+      55
+    );
+
+    doc.text(
+      `Estimated Electricity Bill: Rs. ${estimatedBill.toFixed(2)}`,
+      14,
+      65
+    );
+
+    autoTable(doc, {
+
+      startY: 80,
+
+      head: [["Appliance", "Energy", "Date"]],
+
+      body: usageLogs.map((log) => [
+
+        log.applianceName,
+
+        `${log.energy} kWh`,
+
+        new Date(log.date).toLocaleDateString(),
+
+      ]),
+    });
+
+    doc.save("WattWise-Energy-Report.pdf");
+  };
+
   // ================= STATS =================
 
   const stats = [
@@ -212,6 +264,68 @@ function Dashboard() {
               reduce electricity costs, and improve energy efficiency with
               powerful real-time analytics.
             </p>
+
+
+
+            <div className="flex flex-wrap gap-4 mt-6">
+
+              <Link
+                to="/premium"
+                className="group flex items-center gap-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02]"
+              >
+
+                <div className="bg-white/20 p-2 rounded-xl">
+                  <Crown size={20} />
+                </div>
+
+                <div className="text-left">
+
+                  {user?.isPremium ? (
+
+                    <>
+                      <p className="text-xs font-medium text-orange-100">
+                        Premium Activated
+                      </p>
+
+                      <h3 className="font-bold text-sm">
+                        PDF Reports Unlocked
+                      </h3>
+                    </>
+
+                  ) : (
+
+                    <>
+                      <p className="text-xs font-medium text-orange-100">
+                        Premium Access
+                      </p>
+
+                      <h3 className="font-bold text-sm">
+                        Unlock PDF Reports
+                      </h3>
+                    </>
+
+                  )}
+
+                </div>
+
+              </Link>
+
+              <div className="flex items-center gap-2 bg-white/60 dark:bg-white/[0.05] border border-white/40 dark:border-white/10 px-5 py-3 rounded-2xl backdrop-blur-xl">
+
+                <ShieldCheck
+                  size={20}
+                  className="text-emerald-500"
+                />
+
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Secure Stripe Payment
+                </span>
+
+              </div>
+
+            </div>
+
+
 
           </div>
 
@@ -583,6 +697,42 @@ function Dashboard() {
             </p>
 
           </div>
+
+
+          {/* PREMIUM PDF EXPORT */}
+
+          {user?.isPremium && (
+
+            <div className="bg-white/70 dark:bg-white/[0.04] backdrop-blur-2xl border border-white/40 dark:border-white/10 rounded-[32px] p-6 shadow-xl">
+
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+
+                <div>
+
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white">
+                    Premium PDF Report
+                  </h2>
+
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Download your complete energy usage report
+                  </p>
+
+                </div>
+
+                <button
+                  onClick={downloadPDFReport}
+                  className="px-6 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-600 text-white font-bold transition-all duration-300 hover:scale-[1.02]"
+                >
+                  Download PDF
+                </button>
+
+              </div>
+
+            </div>
+
+          )}
+
+
 
           {/* QUICK INSIGHTS */}
 
