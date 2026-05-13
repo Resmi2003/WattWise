@@ -1,132 +1,282 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Zap, BarChart2, Bell, Activity, Gauge, Shield } from "lucide-react";
-
-// Add a background image relating to energy/smart home (optional)
-const backgroundImageUrl = "https://images.unsplash.com/photo-1558442074-3c19857bc1dc?q=80&w=2862&auto=format&fit=crop"; // Consider dynamic import
+import {
+  Zap,
+  BarChart2,
+  Bell,
+  FileText,
+  TrendingUp,
+  ShieldCheck,
+  Sparkles,
+  Cpu,
+  Activity,
+  BatteryCharging,
+  IndianRupee,
+  Crown,
+} from "lucide-react";
 
 function Landing() {
+
+
+  const features = [
+    {
+      icon: <Zap />,
+      title: "Appliance Management",
+      description:
+        "Add and organize appliances to monitor individual electricity consumption.",
+    },
+
+    {
+      icon: <BarChart2 />,
+      title: "Energy Analytics",
+      description:
+        "Visualize usage logs and identify which appliances consume the most power.",
+    },
+
+    {
+      icon: <Bell />,
+      title: "Usage Alerts",
+      description:
+        "Get notified when daily energy usage crosses your preferred limits.",
+    },
+
+    {
+      icon: <TrendingUp />,
+      title: "Efficiency Insights",
+      description:
+        "Track consumption trends and improve energy efficiency over time.",
+    },
+
+    {
+      icon: <FileText />,
+      title: "PDF Energy Reports",
+      description:
+        "Generate downloadable reports containing appliance usage and bill estimates.",
+    },
+
+    {
+      icon: <Crown />,
+      title: "Premium Dashboard",
+      description:
+        "Access additional monitoring and reporting features.",
+    },
+  ];
+
   return (
-    <div
-      className="min-h-screen bg-gray-50 text-gray-800 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(${backgroundImageUrl})` }}
-    >
-      {/* navbar */}
-      <div className="flex justify-between items-center px-10 py-5 bg-white/90 backdrop-blur-sm shadow-sm sticky top-0 z-50">
-        <h1 className="text-3xl font-bold text-blue-700">WattWise</h1>
 
-        <div className="flex items-center gap-6">
-          <Link
-            to="/login"
-            className="text-sm font-medium text-gray-700 hover:text-blue-700 transition"
-          >
-            Login
-          </Link>
+    <div className="min-h-screen bg-white text-gray-900 overflow-x-hidden">
 
-          <Link
-            to="/register"
-            className="px-5 py-2.5 bg-blue-700 text-white rounded-xl text-sm font-semibold hover:bg-blue-800 transition"
-          >
-            Register
-          </Link>
-        </div>
-      </div>
 
-      {/* hero */}
-      <section className="text-center px-6 pt-24 pb-16 max-w-5xl mx-auto bg-white/80 backdrop-blur-lg rounded-3xl mt-12 shadow-xl border border-gray-100">
-        <h2 className="text-6xl font-extrabold mb-6 leading-tight text-gray-900">
-          Smart Energy Tracking for <span className="text-blue-700">Modern Homes</span>
-        </h2>
+      <header className="sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-gray-100">
 
-        <p className="text-gray-700 text-xl mb-6 max-w-3xl mx-auto leading-relaxed">
-          Effortlessly monitor appliance usage, analyze energy consumption patterns, and gain actionable insights to optimize your electricity usage — all through an intuitive, intelligent dashboard.
-        </p>
+        <div className="flex justify-between items-center px-6 md:px-12 py-4 max-w-7xl mx-auto">
 
-        <p className="text-blue-700 font-semibold mb-10 text-lg">
-          No hardware required. Just smarter energy insights.
-        </p>
+          <div className="flex items-center gap-2">
+            <Zap className="text-green-600" />
 
-        <Link
-          to="/register"
-          className="px-10 py-4 bg-blue-700 text-white rounded-xl font-bold text-lg hover:bg-blue-800 transition"
-        >
-          Get Started For Free
-        </Link>
-      </section>
-
-      {/* features */}
-      <section className="px-10 py-20 bg-white mt-16 rounded-3xl shadow-sm">
-        <h3 className="text-4xl font-bold text-center mb-14 text-gray-950">
-          Unlock Powerful Core Features
-        </h3>
-
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-
-          <div className="p-8 rounded-2xl border border-gray-100 bg-white hover:border-blue-100 hover:bg-blue-50/50 transition">
-            <Zap className="text-blue-600 mb-4 h-10 w-10 p-2.5 bg-blue-100 rounded-lg" />
-            <h4 className="font-bold text-xl text-gray-950">Real-time Appliance Tracking</h4>
-            <p className="text-base text-gray-700 mt-2.5 leading-relaxed">
-              Instantly track the energy consumption of every registered appliance in real time.
-            </p>
+            <h1 className="text-2xl font-bold text-green-600">
+              WattWise
+            </h1>
           </div>
 
-          <div className="p-8 rounded-2xl border border-gray-100 bg-white hover:border-green-100 hover:bg-green-50/50 transition">
-            <BarChart2 className="text-green-600 mb-4 h-10 w-10 p-2.5 bg-green-100 rounded-lg" />
-            <h4 className="font-bold text-xl text-gray-950">In-depth Consumption Analytics</h4>
-            <p className="text-base text-gray-700 mt-2.5 leading-relaxed">
-              Visualize and understand your past consumption patterns with clear, insightful analytics.
-            </p>
-          </div>
+          <nav className="flex items-center gap-4 text-sm">
 
-          <div className="p-8 rounded-2xl border border-gray-100 bg-white hover:border-red-100 hover:bg-red-50/50 transition">
-            <Bell className="text-red-600 mb-4 h-10 w-10 p-2.5 bg-red-100 rounded-lg" />
-            <h4 className="font-bold text-xl text-gray-950">Proactive Smart Alerts</h4>
-            <p className="text-base text-gray-700 mt-2.5 leading-relaxed">
-              Receive notifications when consumption spikes or surpasses your set usage limits.
-            </p>
-          </div>
+            <Link
+              to="/login"
+              className="px-5 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 transition"
+            >
+              Login
+            </Link>
+
+            <Link
+              to="/register"
+              className="px-5 py-2 rounded-xl border border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition"
+            >
+              Register
+            </Link>
+
+          </nav>
 
         </div>
+
+      </header>
+
+
+      <section className="relative">
+
+        <div className="absolute inset-0 bg-gradient-to-b from-green-50 via-white to-white"></div>
+
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-24 grid md:grid-cols-2 gap-14 items-center relative">
+
+
+          <div>
+
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm mb-6">
+              <Sparkles size={16} /> Smart Energy Monitoring Platform
+            </div>
+
+            <h2 className="text-4xl md:text-6xl font-extrabold leading-tight">
+              Understand your
+              <span className="text-green-600"> electricity usage</span>
+            </h2>
+
+            <p className="mt-6 text-gray-600 text-lg leading-relaxed">
+              WattWise helps users manage appliances, monitor energy usage,
+              analyze consumption trends, and estimate electricity costs
+              through a centralized smart dashboard.
+            </p>
+
+            <div className="flex justify-center md:justify-start mt-8">
+
+              <Link
+                to="/register"
+                className="px-6 py-3 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700 transition"
+              >
+                Get Started
+              </Link>
+
+            </div>
+
+          </div>
+
+
+          <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
+
+            <div className="flex items-center gap-3 mb-6">
+              <Cpu className="text-green-600" />
+
+              <h4 className="font-semibold">
+                WattWise Intelligence Core
+              </h4>
+            </div>
+
+            <p className="text-gray-600 text-sm leading-relaxed">
+              The platform analyzes appliance usage data to generate analytics, alerts, and electricity usage insights.
+            </p>
+
+            <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+
+              <div className="flex items-center gap-2 p-3 bg-green-50 rounded-xl">
+                <Activity className="text-green-600" size={18} />
+                Usage logs
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-xl">
+                <BarChart2 className="text-blue-600" size={18} />
+                Analytics
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-yellow-50 rounded-xl">
+                <Bell className="text-yellow-600" size={18} />
+                Smart alerts
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-purple-50 rounded-xl">
+                <FileText className="text-purple-600" size={18} />
+                PDF reports
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </section>
 
-      {/* How it works */}
-      <section className="px-10 py-20 bg-blue-50 mt-16 rounded-3xl shadow-inner">
-        <h3 className="text-4xl font-bold text-center mb-14 text-gray-950">
-          How <span className="text-blue-700">WattWise</span> Works in 3 Simple Steps
-        </h3>
 
-        <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto text-center">
+      <section className="py-16 border-y bg-white">
 
-          <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
-            <Activity className="mx-auto text-blue-700 mb-4 h-12 w-12 p-3 bg-blue-100 rounded-full" />
-            <h4 className="font-bold text-xl text-gray-950">1. Register Appliances</h4>
-            <p className="text-base text-gray-700 mt-2.5 leading-relaxed">
-              Easily add your home appliances and their specifications to the WattWise system.
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center">
+
+          <div>
+            <BatteryCharging className="mx-auto text-green-600" />
+
+            <p className="text-3xl font-bold text-green-600 mt-2">
+              Appliance Tracking
+            </p>
+
+            <p className="text-gray-600 mt-1">
+              Monitor electricity usage for each appliance.
             </p>
           </div>
 
-          <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
-            <Gauge className="mx-auto text-green-700 mb-4 h-12 w-12 p-3 bg-green-100 rounded-full" />
-            <h4 className="font-bold text-xl text-gray-950">2. Track & Monitor</h4>
-            <p className="text-base text-gray-700 mt-2.5 leading-relaxed">
-              WattWise calculates and displays real-time energy consumption for each active device.
+          <div>
+            <IndianRupee className="mx-auto text-green-600" />
+
+            <p className="text-3xl font-bold text-green-600 mt-2">
+              Bill Estimation
+            </p>
+
+            <p className="text-gray-600 mt-1">
+              Estimate electricity costs from usage data.
             </p>
           </div>
 
-          <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
-            <Shield className="mx-auto text-yellow-700 mb-4 h-12 w-12 p-3 bg-yellow-100 rounded-full" />
-            <h4 className="font-bold text-xl text-gray-950">3. Optimize & Save</h4>
-            <p className="text-base text-gray-700 mt-2.5 leading-relaxed">
-              Receive smart recommendations and insights to intelligently optimize and reduce usage.
+          <div>
+            <ShieldCheck className="mx-auto text-green-600" />
+
+            <p className="text-3xl font-bold text-green-600 mt-2">
+              Secure Access
+            </p>
+
+            <p className="text-gray-600 mt-1">
+              Role-based access for users and administrators.
             </p>
           </div>
 
         </div>
+
       </section>
 
-      {/* Footer (simple) */}
-      <footer className="py-8 px-10 text-center text-sm text-gray-600 bg-gray-100 mt-16 rounded-t-3xl border-t border-gray-200">
-        <p>&copy; {new Date().getFullYear()} WattWise Inc. All energy smartened.</p>
+
+      <section className="py-24 bg-gray-50">
+
+        <div className="max-w-6xl mx-auto px-6 text-center mb-14">
+
+          <h3 className="text-3xl font-bold">
+            Everything you need in one platform
+          </h3>
+
+          <p className="text-gray-600 mt-3">
+            Built for monitoring appliance activity, tracking electricity
+            consumption, and generating smart energy insights.
+          </p>
+
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
+
+          {features.map((feature, index) => (
+
+            <div
+              key={index}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition"
+            >
+
+              <div className="text-green-600 mb-3">
+                {feature.icon}
+              </div>
+
+              <h4 className="font-semibold">
+                {feature.title}
+              </h4>
+
+              <p className="text-sm text-gray-500 mt-2 leading-relaxed">
+                {feature.description}
+              </p>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </section>
+
+
+      <footer className="py-10 text-center text-sm bg-green-600 text-white">
+        © 2026 WattWise. Smart Energy Monitoring System.
       </footer>
 
     </div>
