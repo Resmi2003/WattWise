@@ -21,15 +21,12 @@ import EnergyChart from "../components/EnergyChart";
 
 function Dashboard() {
 
-  // ================= CONTEXT =================
 
   const { appliances, usageLogs, user } = useAppContext();
 
-  // ================= DATE =================
 
   const today = new Date().toISOString().split("T")[0];
 
-  // ================= BASIC METRICS =================
 
   const totalEnergy = useMemo(() => {
     return usageLogs.reduce((sum, log) => sum + Number(log.energy), 0);
@@ -69,7 +66,6 @@ function Dashboard() {
     return "High Consumer";
   };
 
-  // ================= FILTER =================
 
   const [filter, setFilter] = useState("daily");
 
@@ -128,7 +124,7 @@ function Dashboard() {
 
   const getTopAppliance = () => {
 
-    const map = {};
+    const map = {};        // for storing appliance totals
 
     usageLogs.forEach((log) => {
 
@@ -236,7 +232,6 @@ function Dashboard() {
 
     <div className="min-h-screen space-y-8 text-gray-900 dark:text-white bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 dark:from-[#0b1120] dark:via-[#0f172a] dark:to-[#111827] p-2 rounded-3xl">
 
-      {/* ================= HERO ================= */}
 
       <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-white via-sky-50 to-cyan-100 dark:from-[#111827] dark:via-[#172554] dark:to-[#0f172a] p-6 md:p-8 border border-white/40 dark:border-white/10 shadow-xl backdrop-blur-xl">
 
@@ -409,7 +404,6 @@ function Dashboard() {
 
       )}
 
-      {/* ================= STATS ================= */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
@@ -597,7 +591,6 @@ function Dashboard() {
 
       </div>
 
-      {/* ================= BOTTOM SECTION ================= */}
 
       <div className="grid grid-cols-1 xl:grid-cols-[1.5fr_1fr] gap-6">
 

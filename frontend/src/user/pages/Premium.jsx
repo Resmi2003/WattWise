@@ -13,7 +13,6 @@ import { useAppContext } from "../../context/AppContext";
 
 function Premium() {
 
-    // CONTEXT
     const { user } = useAppContext();
 
     // PAYMENT
@@ -21,7 +20,6 @@ function Premium() {
 
         try {
 
-            // EXTRA SAFETY
             if (user?.isPremium) {
                 return;
             }
@@ -46,7 +44,6 @@ function Premium() {
 
             <div className="max-w-4xl w-full bg-white/70 dark:bg-white/[0.04] backdrop-blur-2xl border border-white/40 dark:border-white/10 rounded-[36px] shadow-2xl overflow-hidden">
 
-                {/* TOP SECTION */}
 
                 <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 p-10 text-white text-center">
 

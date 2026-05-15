@@ -26,7 +26,6 @@ function PaymentSuccess() {
 
                     if (result.status === 200) {
 
-                        // IMPORTANT
                         // REFRESH USER FROM DATABASE
                         await fetchUser()
 

@@ -18,7 +18,7 @@ function Notifications() {
   const fetchNotifications = async () => {
     try {
       const res = await getNotificationAPI();
-      setNotifications(Array.isArray(res.data) ? res.data : []);
+      setNotifications(Array.isArray(res.data) ? res.data : []);    // stores notification data, checks response is array before storing
 
     } catch (err) {
       console.log("FETCH ERROR:", err);
@@ -44,7 +44,7 @@ function Notifications() {
 
       setNotifications((prev) =>
         prev.map((item) =>
-          item._id === id ? { ...item, isRead: true } : item
+          item._id === id ? { ...item, isRead: true } : item        // update clicked notification
         )
       );
 
@@ -65,7 +65,7 @@ function Notifications() {
 
 
       setNotifications((prev) =>
-        prev.map((item) => ({ ...item, isRead: true }))
+        prev.map((item) => ({ ...item, isRead: true }))   // update all notifications
       );
       // Update navbar count
       fetchUnreadCount();
@@ -90,7 +90,6 @@ function Notifications() {
         </div>
       )}
 
-      {/* LIST */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow">
 
         {loading ? (

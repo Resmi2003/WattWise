@@ -10,7 +10,7 @@ exports.createCheckoutSessionController = async (req, res) => {
     try {
 
         // GET LOGGED USER
-        const loggedUser = await users.findById(req.payload)
+        const loggedUser = await users.findById(req.payload)  // get loggedin user using jwt payload
 
         const session = await stripe.checkout.sessions.create({
 
@@ -35,7 +35,6 @@ exports.createCheckoutSessionController = async (req, res) => {
 
             mode: 'payment',
 
-            // FIXED
             success_url: `${process.env.CLIENT_URL}/payment-success?email=${loggedUser.email}`,
 
             cancel_url: `${process.env.CLIENT_URL}/payment-cancel`

@@ -17,7 +17,7 @@ wattWiseServer.use(cors())
 // parse json
 wattWiseServer.use(express.json())
 
-// FIXED: add /api prefix
+// add /api prefix
 wattWiseServer.use('/api', router)
 
 // static folder for uploads

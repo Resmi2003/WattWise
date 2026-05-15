@@ -5,13 +5,13 @@ const jwtMiddleware = (req, res, next) => {
 
     try {
 
-        const authHeader = req.headers["authorization"]
+        const authHeader = req.headers["authorization"]   // gets token from request header
 
         if (!authHeader) {
             return res.status(401).json("Authorization header missing")
         }
 
-        const token = authHeader.split(" ")[1]
+        const token = authHeader.split(" ")[1]   // removes bearer 
 
         if (!token) {
             return res.status(401).json("Token missing")

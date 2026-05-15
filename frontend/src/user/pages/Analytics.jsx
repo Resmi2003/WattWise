@@ -11,7 +11,6 @@ function Analytics() {
 
     const { usageLogs } = useAppContext();
 
-    // ================= EMPTY =================
 
     if (!usageLogs || usageLogs.length === 0) {
 
@@ -116,7 +115,6 @@ function Analytics() {
 
         <div className="min-h-screen text-gray-900 dark:text-white overflow-hidden">
 
-            {/* ================= MAIN WRAPPER ================= */}
 
             <div className="relative overflow-hidden rounded-[40px] border border-gray-200 dark:border-[#1e293b] bg-gradient-to-br from-[#f8fafc] via-[#eef2ff] to-[#f0f9ff] dark:from-[#020617] dark:via-[#0f172a] dark:to-[#111827] p-7 md:p-12 shadow-2xl">
 
@@ -128,7 +126,6 @@ function Analytics() {
 
                 <div className="relative z-10">
 
-                    {/* ================= HEADER ================= */}
 
                     <div className="flex items-center justify-between flex-wrap gap-5">
 

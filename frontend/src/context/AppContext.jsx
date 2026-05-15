@@ -104,7 +104,7 @@ const AppContextProvider = ({ children }) => {
     const storedToken = sessionStorage.getItem("token");
 
     if (storedToken) {
-      setToken(storedToken);   // sync state
+      setToken(storedToken);   
       fetchAppliances();
       fetchUsage();
       fetchUser();
@@ -191,7 +191,7 @@ const AppContextProvider = ({ children }) => {
   );
 };
 
-// Custom Hook
+
 export const useAppContext = () => useContext(AppContext);
 
 export default AppContextProvider;

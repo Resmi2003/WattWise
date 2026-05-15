@@ -16,12 +16,10 @@ function EnergyChart({ data: externalData }) {
 
   const { usageLogs } = useAppContext();
 
-  // ✅ FIXED CONDITION
   const logs = externalData && externalData.length > 0
     ? externalData
     : usageLogs;
 
-  // ✅ GROUP DATA (OPTIMIZED)
   const chartData = useMemo(() => {
     const energyMap = {};
 

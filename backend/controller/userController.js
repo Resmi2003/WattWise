@@ -13,7 +13,7 @@ const { OAuth2Client } = require('google-auth-library')
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 
-// REGISTER
+// REGISTER api function
 exports.registerController = async (req, res) => {
     console.log("inside register controller");
 
@@ -27,15 +27,16 @@ exports.registerController = async (req, res) => {
         }
 
         // hash password
-        const hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPassword = await bcrypt.hash(password, 10)  
 
+        // creates new mongodb user document
         const newUser = await users.create({
             username,
             email,
             password: hashedPassword
         })
 
-        // remove password before sending response
+        // remove password before sending response from backend to frontend
         const { password: pwd, ...userData } = newUser._doc
 
         res.status(200).json(userData)
@@ -105,7 +106,7 @@ exports.googleLoginController = async (req, res) => {
 
     try {
 
-        const ticket = await client.verifyIdToken({
+        const ticket = await client.verifyIdToken({       // verifies google credential token
             idToken: credential,
             audience: process.env.GOOGLE_CLIENT_ID
         })
@@ -154,7 +155,7 @@ exports.getProfileController = async (req, res) => {
     try {
         const userId = req.payload
 
-        const user = await userModel.findById(userId).select('-password')
+        const user = await userModel.findById(userId).select('-password')   // gets user data without password
 
         res.status(200).json(user)
 
@@ -207,7 +208,7 @@ exports.profileImageController = async (req, res) => {
     try {
 
         const userId = req.payload
-        const profileImage = req.file.filename
+        const profileImage = req.file.filename   // gets uploaded image filename from multer middleware
 
         const updatedUser = await userModel.findByIdAndUpdate(
             userId,
@@ -238,7 +239,7 @@ exports.changePasswordController = async (req, res) => {
             return res.status(401).json("Incorrect old password")
         }
 
-        const hashedPassword = await bcrypt.hash(newPassword, 10)
+        const hashedPassword = await bcrypt.hash(newPassword, 10) // encrypts new password
 
         user.password = hashedPassword
         await user.save()
@@ -276,7 +277,7 @@ exports.deleteOwnAccountController = async (req, res) => {
 exports.updateAchievements = async (userId) => {
     try {
 
-        const usageCount = await usageModel.countDocuments({ userId })
+        const usageCount = await usageModel.countDocuments({ userId })    // counts usage logs and appliances
         const applianceCount = await applianceModel.countDocuments({ userId })
 
         // get all usage logs

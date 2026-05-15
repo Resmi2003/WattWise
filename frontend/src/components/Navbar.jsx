@@ -70,7 +70,6 @@ function Navbar() {
   return (
     <div className="flex justify-between items-center px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
 
-      {/* Title */}
 
       <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
         {location.pathname === "/premium" ? "" : getPageTitle()}
@@ -78,7 +77,7 @@ function Navbar() {
 
       <div className="flex items-center gap-4 relative">
 
-        {/* Notifications (ONLY USER) */}
+        {/* Notifications */}
         {!isAdmin && (
           <button
             onClick={() => {
@@ -96,7 +95,7 @@ function Navbar() {
           </button>
         )}
 
-        {/* Profile (ONLY USER) */}
+        {/* Profile */}
         {!isAdmin && (
           <div className="relative z-50">
             <button
@@ -157,7 +156,7 @@ function Navbar() {
                   Settings
                 </button>
 
-                {/* USER LOGOUT WITH ICON */}
+                {/* USER LOGOUT */}
                 <button
                   onClick={() => {
                     handleLogout();
@@ -174,7 +173,7 @@ function Navbar() {
           </div>
         )}
 
-        {/* ADMIN LOGOUT WITH ICON */}
+        {/* ADMIN LOGOUT */}
         {isAdmin && (
           <button
             onClick={handleLogout}

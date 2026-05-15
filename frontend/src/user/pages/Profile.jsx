@@ -18,7 +18,7 @@ import { server_url } from "../../services/server_url";
 function Profile() {
   const { appliances, usageLogs, user, setUser, fetchUser } = useAppContext();
 
-  const achievements = user?.achievements || [];
+  const achievements = user?.achievements || [];      // get achievements badges from user data
 
 
   const [editMode, setEditMode] = useState(false);
@@ -42,7 +42,6 @@ function Profile() {
     }
   };
 
-  // SAFE DATA (no fake numbers)
   const applianceCount = appliances.length;
   const usageCount = usageLogs.length;
 
@@ -98,7 +97,6 @@ function Profile() {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-8">
 
-      {/* HERO */}
       <div className="rounded-3xl p-6 bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-700 dark:from-cyan-800 dark:via-slate-800 dark:to-blue-900 text-white shadow-lg border border-white/10">
         <div className="flex justify-between items-center">
 
@@ -139,7 +137,6 @@ function Profile() {
 
             </label>
 
-            {/* Info */}
             <div>
               {editMode ? (
                 <input
@@ -167,7 +164,7 @@ function Profile() {
         </div>
       </div>
 
-      {/* QUICK SNAPSHOT (NOT DASHBOARD) */}
+      {/* QUICK SNAPSHOT */}
       <div className="flex flex-wrap gap-3">
 
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-sm">
@@ -182,7 +179,7 @@ function Profile() {
 
       </div>
 
-      {/* ACHIEVEMENTS (BADGES, NOT TEXT BLOCKS) */}
+      {/* ACHIEVEMENTS */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow">
         <h3 className="font-semibold mb-4">Achievements</h3>
 
@@ -205,7 +202,7 @@ function Profile() {
         )}
       </div>
 
-      {/* RECENT ACTIVITY (THIS MAKES IT FEEL REAL) */}
+      {/* RECENT ACTIVITY */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow">
 
         <h3 className="font-semibold mb-4">Recent Activity</h3>

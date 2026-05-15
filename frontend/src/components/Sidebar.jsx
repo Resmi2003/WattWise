@@ -41,12 +41,10 @@ function Sidebar() {
       border-r border-gray-300 dark:border-gray-800 backdrop-blur-md 
       shadow-sm">
 
-      {/* Logo */}
       <div className="p-6 text-2xl font-extrabold tracking-tight text-blue-600 dark:text-blue-400">
         WattWise
       </div>
 
-      {/* Menu */}
       <nav className="px-4 space-y-2 flex-1">
         {menu.map((item) => {
           const active = location.pathname.startsWith(item.path);
@@ -73,7 +71,6 @@ function Sidebar() {
         })}
       </nav>
 
-      {/* Bottom Status Card */}
       <div className="p-5">
         <div className="p-4 rounded-xl 
             bg-blue-50 dark:bg-gray-800

@@ -16,14 +16,12 @@ function Appliances() {
   const [power, setPower] = useState("");
   const [editId, setEditId] = useState(null);
 
-  // 🔽 ADD THIS
   const [loading, setLoading] = useState(true);
 
   // LOAD FROM BACKEND
   useEffect(() => {
     const fetchAppliances = async () => {
 
-      // 🔽 ADD THIS
       setLoading(true);
 
       const token = sessionStorage.getItem("token");
@@ -38,7 +36,6 @@ function Appliances() {
         setAppliances(result.data);
       }
 
-      // 🔽 ADD THIS
       setLoading(false);
     };
 
@@ -145,7 +142,6 @@ function Appliances() {
         </div>
       </form>
 
-      {/* 🔽 ONLY THIS PART CHANGED */}
       {loading ? (
         <div className="text-center py-10 text-gray-500 dark:text-gray-400">
           Loading...

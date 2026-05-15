@@ -35,7 +35,6 @@ function AdminAnalytics() {
   const [isLive, setIsLive] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
 
-  // ================= FETCH ALL =================
   const fetchAll = async () => {
     await Promise.all([
       fetchLogs(),
